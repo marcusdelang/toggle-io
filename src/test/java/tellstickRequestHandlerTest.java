@@ -22,7 +22,7 @@ class tellstickRequestHandlerTest {
                 "Host: www.example.com\n" +
                 "Content-Type: application/json\n" +
                 "Content-Length: 49 \n" +
-                "\n" +
+                "\r\n" +
                 "{\n" +
                 "    \"deviceID\": \"2\",\n" +
                 "    \"operation\": \"1\",\n" +
