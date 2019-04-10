@@ -9,9 +9,11 @@ public class OutletController {
         return alive;
     }
     public static boolean turnOn(){
+
         return ScriptRunner.runScript(TelldusScripts.on());
     }
     public static boolean turnOff(){
+
         return ScriptRunner.runScript(TelldusScripts.off());
     }
 }
