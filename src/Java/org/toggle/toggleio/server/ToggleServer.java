@@ -62,6 +62,7 @@ public class ToggleServer {
 
         RequestHandler.handleRequest(connectionSocket, clientSentence);
         connectionSocket.close();
+        fromClient.close();
       }
     } catch (IOException ioe) {
       System.out.println("Something went wrong");
