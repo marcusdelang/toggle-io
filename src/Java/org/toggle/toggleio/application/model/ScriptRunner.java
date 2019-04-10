@@ -20,7 +20,6 @@ public class ScriptRunner {
             success = false;
             return success;
         }
-
         return success;
     }
 }
