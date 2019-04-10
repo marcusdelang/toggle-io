@@ -10,25 +10,25 @@ import javax.imageio.IIOException;
 
 public class ToggleServer {
 
-  public static void start()throws PortUnreachableException {
+  public static void start() throws PortUnreachableException {
     int port = 80;
     try {
       runtime(port);
-    }catch (PortUnreachableException pue){
+    } catch (PortUnreachableException pue) {
       throw new PortUnreachableException("Could not open Socket on port " + port);
     }
 
   }
 
-  public static void start(int port)throws PortUnreachableException {
+  public static void start(int port) throws PortUnreachableException {
     try {
       runtime(port);
-    }catch (PortUnreachableException pue){
+    } catch (PortUnreachableException pue) {
       throw new PortUnreachableException("Could not open Socket on port" + port);
     }
   }
 
-  public static void runtime(int port) throws PortUnreachableException{
+  public static void runtime(int port) throws PortUnreachableException {
 
     String clientSentence;
     ServerSocket welcomeSocket;
@@ -37,7 +37,7 @@ public class ToggleServer {
     try {
       welcomeSocket = new ServerSocket(port);
     } catch (Exception ex) {
-      throw  new PortUnreachableException("Could not open socket on port " + port);
+      throw new PortUnreachableException("Could not open socket on port " + port);
     }
     try {
       while (true) {
@@ -58,6 +58,7 @@ public class ToggleServer {
         clientSentence = sentenceBuilder.toString();
 
         RequestHandler.handleRequest(connectionSocket, clientSentence);
+        connectionSocket.close();
       }
     } catch (IOException ioe) {
       System.out.println("Something went wrong");

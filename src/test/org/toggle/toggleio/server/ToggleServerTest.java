@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 class ToggleServerTest {
 
+
   @Test
   void startOccupied() {
     try {
@@ -19,7 +20,8 @@ class ToggleServerTest {
       Assertions.assertThrows(PortUnreachableException.class, () -> {
         ToggleServer.start();
       });
-    }catch (IOException ioe){
+      occupy.close();
+    } catch (IOException ioe) {
       fail();
     }
 
@@ -33,9 +35,11 @@ class ToggleServerTest {
       Assertions.assertThrows(PortUnreachableException.class, () -> {
         ToggleServer.start(port);
       });
-    }catch (IOException ioe){
+      occupy.close();
+    } catch (IOException ioe) {
       fail();
     }
+
   }
 
   @Test
@@ -46,7 +50,8 @@ class ToggleServerTest {
       Assertions.assertThrows(PortUnreachableException.class, () -> {
         ToggleServer.runtime(port);
       });
-    }catch (IOException ioe){
+      occupy.close();
+    } catch (IOException ioe) {
       fail();
     }
   }
