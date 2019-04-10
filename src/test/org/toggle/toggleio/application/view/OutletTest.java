@@ -7,23 +7,23 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class OutletTest {
-    @BeforeEach
-    void setUp() {
-    }
 
-    @AfterEach
-    void tearDown() {
-    }
+  @BeforeEach
+  void setUp() {
+  }
 
-    @Test
-    void isAlive() {
-    }
+  @Test
+  void isAliveTest() {
+    assertTrue(Outlet.isAlive());
+  }
 
-    @Test
-    void on() {
-    }
+  @Test
+  void onTest() {
+    assertTrue(Outlet.on());
+  }
 
-    @Test
-    void off() {
-    }
+  @Test
+  void offTest() {
+    assertTrue(Outlet.off());
+  }
 }
