@@ -22,20 +22,20 @@ class OutletControllerTest {
 
   @Test
   void isAlive() {
-    assertTrue(outletController.isAlive());
+    assertTrue(OutletController.isAlive());
   }
 
   @Test
   void turnOn() {
     assertEquals("tdtool --on 1", script);
-    assertTrue(scriptRunner.runScript(script));
+    assertTrue(ScriptRunner.runScript(script));
   }
 
   @Test
   void turnOff() {
     script = TelldusScripts.off();
     assertEquals(script, "tdtool --off 1");
-    assertEquals(scriptRunner.runScript(script), true);
+    assertEquals(ScriptRunner.runScript(script), true);
   }
 
 }

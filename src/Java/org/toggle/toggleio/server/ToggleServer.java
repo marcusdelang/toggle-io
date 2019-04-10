@@ -39,10 +39,12 @@ public class ToggleServer {
     } catch (Exception ex) {
       throw new PortUnreachableException("Could not open socket on port " + port);
     }
+    System.out.println("Server is running on port " + port);
     try {
       while (true) {
 
         Socket connectionSocket = welcomeSocket.accept();
+        System.out.println("Received request");
         BufferedReader fromClient =
             new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
 
