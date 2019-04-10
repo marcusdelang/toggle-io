@@ -44,7 +44,7 @@ public class ToggleServer {
       while (true) {
 
         Socket connectionSocket = welcomeSocket.accept();
-        System.out.println("Received request");
+        System.out.println("Received request from " + connectionSocket);
         BufferedReader fromClient =
             new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
 
@@ -55,8 +55,9 @@ public class ToggleServer {
           }
           sentenceBuilder.append(clientLines + "\n");
         }
-
-        sentenceBuilder.setLength(sentenceBuilder.length() - 1);
+        if (sentenceBuilder.length() > 0) {
+          sentenceBuilder.setLength(sentenceBuilder.length() - 1);
+        }
         clientSentence = sentenceBuilder.toString();
 
         RequestHandler.handleRequest(connectionSocket, clientSentence);
