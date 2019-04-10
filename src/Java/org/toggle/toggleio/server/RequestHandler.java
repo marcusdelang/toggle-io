@@ -26,12 +26,11 @@ public class RequestHandler {
           new DataOutputStream(connectionSocket.getOutputStream());
 
       outToClient.writeBytes(response);
+      outToClient.close();
 
     } catch (IOException ioe) {
       throw new IOException("Could not open output stream");
     }
-
-
   }
 
   private static boolean decideAction(String endpoint) {
