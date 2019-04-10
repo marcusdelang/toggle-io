@@ -5,7 +5,6 @@ import java.io.DataOutputStream;
 public class RequestHandler {
     public static void handleRequest(DataOutputStream connectionSocket, String request){
 
-
     }
     public static String parseUrlEndpoint(String request){
 
