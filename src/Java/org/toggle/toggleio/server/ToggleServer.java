@@ -28,7 +28,7 @@ public class ToggleServer {
     }
   }
 
-  public static void runtime(int port) throws PortUnreachableException {
+  private static void runtime(int port) throws PortUnreachableException {
 
     String clientSentence;
     ServerSocket welcomeSocket;
