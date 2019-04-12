@@ -67,7 +67,7 @@ public class ToggleServer {
     } catch (SocketException se) {
       System.out.println("Could not close connection");
     } catch (IOException ioe) {
-      System.out.println("Something went wrong");
+      System.out.println("Something went wrong" + ioe);
     }
   }
 }
