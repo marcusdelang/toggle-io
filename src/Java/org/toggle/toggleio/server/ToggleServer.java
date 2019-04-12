@@ -44,6 +44,7 @@ public class ToggleServer {
     try {
       while (true) {
         Socket connectionSocket = welcomeSocket.accept();
+        connectionSocket.setSoTimeout(5000);
         System.out.println("Received request from " + connectionSocket);
         BufferedReader fromClient =
             new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
