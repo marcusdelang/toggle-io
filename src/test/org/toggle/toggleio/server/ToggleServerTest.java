@@ -24,7 +24,6 @@ class ToggleServerTest {
     } catch (IOException ioe) {
       fail();
     }
-
   }
 
   @Test
@@ -34,21 +33,6 @@ class ToggleServerTest {
       ServerSocket occupy = new ServerSocket(8888);
       Assertions.assertThrows(PortUnreachableException.class, () -> {
         ToggleServer.start(port);
-      });
-      occupy.close();
-    } catch (IOException ioe) {
-      fail();
-    }
-
-  }
-
-  @Test
-  void runtimePortOccupied() {
-    final int port = 8888;
-    try {
-      ServerSocket occupy = new ServerSocket(8888);
-      Assertions.assertThrows(PortUnreachableException.class, () -> {
-        ToggleServer.runtime(port);
       });
       occupy.close();
     } catch (IOException ioe) {

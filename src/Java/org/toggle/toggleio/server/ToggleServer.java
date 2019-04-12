@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.net.PortUnreachableException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import javax.imageio.IIOException;
 
 public class ToggleServer {
@@ -28,7 +29,7 @@ public class ToggleServer {
     }
   }
 
-  public static void runtime(int port) throws PortUnreachableException {
+  private static void runtime(int port) throws PortUnreachableException {
 
     String clientSentence;
     ServerSocket welcomeSocket;
@@ -42,7 +43,6 @@ public class ToggleServer {
     System.out.println("Server is running on port " + port);
     try {
       while (true) {
-
         Socket connectionSocket = welcomeSocket.accept();
         System.out.println("Received request from " + connectionSocket);
         BufferedReader fromClient =
@@ -61,15 +61,13 @@ public class ToggleServer {
         clientSentence = sentenceBuilder.toString();
 
         RequestHandler.handleRequest(connectionSocket, clientSentence);
-        connectionSocket.close();
         fromClient.close();
+        connectionSocket.close();
       }
+    } catch (SocketException se) {
+      System.out.println("Could not close connection");
     } catch (IOException ioe) {
       System.out.println("Something went wrong");
-      return;
     }
-
-
   }
-
 }

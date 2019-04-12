@@ -3,15 +3,13 @@ package org.toggle.toggleio.server;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.lang.String;
 
-class RequestHandlerTest {
+class HttpParseTest {
 
   @Test
   void parseUrlEndpointCorrectInput() {
-   final String input =
+    final String input =
         "POST /toggle HTTP/1.1\n" +
             "Host: www.example.com\n" +
             "Content-Type: application/json\n" +
@@ -21,15 +19,15 @@ class RequestHandlerTest {
             "    \"deviceID\": \"2\",\n" +
             "    \"operation\": \"1\",\n" +
             "}";
-   final String expected = "/toggle";
-   final String actual = RequestHandler.parseUrlEndpoint(input);
-   assertEquals(actual,expected);
+    final String expected = "/toggle";
+    final String actual = HttpParse.parseUrlEndpoint(input);
+    assertEquals(actual,expected);
   }
   @Test
   void parseUrlEndpointEmptyInputException() {
     final String input = "";
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      RequestHandler.parseUrlEndpoint(input);
+      HttpParse.parseUrlEndpoint(input);
     });
   }
 
@@ -46,16 +44,15 @@ class RequestHandlerTest {
             "    \"operation\": \"1\",\n" +
             "}";
     final String expected = "application/json";
-    final String actual = RequestHandler.parseContentType(input);
+    final String actual = HttpParse.parseContentType(input);
     assertEquals(actual,expected);
   }
   @Test
   void parseContentTypeEmptyInputException() {
     final String input = "";
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      RequestHandler.parseContentType(input);
+      HttpParse.parseContentType(input);
     });
 
   }
-
 }
