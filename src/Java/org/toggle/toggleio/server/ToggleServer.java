@@ -44,8 +44,9 @@ public class ToggleServer {
     System.out.println("Server is running on port " + port);
     try {
       while (true) {
-        try {
+
           Socket connectionSocket = welcomeSocket.accept();
+        try {
           connectionSocket.setSoTimeout(5000);
           System.out.println("Received request from " + connectionSocket);
           BufferedReader fromClient =
@@ -67,7 +68,8 @@ public class ToggleServer {
           fromClient.close();
           connectionSocket.close();
         }catch (SocketTimeoutException ste){
-          System.out.println("ste");
+          System.out.println(ste);
+          connectionSocket.close();
         }
       }
     } catch (SocketException se) {
