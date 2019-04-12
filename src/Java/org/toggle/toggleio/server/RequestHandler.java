@@ -10,8 +10,17 @@ import org.json.HTTP;
 import org.json.JSONObject;
 import org.toggle.toggleio.application.view.Outlet;
 
+/**
+ * Parses a http request and sends back a response on socket received
+ */
 public class RequestHandler {
 
+  /**
+   *
+   * @param connectionSocket A socket that should receive the response
+   * @param request A http request
+   * @throws IOException Throws exception if unable to close or open socket
+   */
   static void handleRequest(Socket connectionSocket, String request) throws IOException {
     boolean goodRequest = false;
     String response = HttpResponse.httpBadRequest();

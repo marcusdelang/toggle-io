@@ -3,9 +3,18 @@ package org.toggle.toggleio.server;
 import org.json.HTTP;
 import org.json.JSONObject;
 
+/**
+ * Parses a HTTP request
+ */
 public class HttpParse {
 
-  public static String parseUrlEndpoint(String request) {
+  /**
+   * Parse a HTTP request and returns the endpoint from header
+   * @exception IllegalArgumentException not a valid http request
+   * @param request http request
+   * @return endpoint
+   */
+  public static String parseUrlEndpoint(String request) throws IllegalArgumentException{
     if (!validHTTP(request)) {
       throw new IllegalArgumentException("Not a valid HTTP request");
     }
@@ -18,7 +27,12 @@ public class HttpParse {
     return endpoint;
   }
 
-  public static String parseContentType(String request) {
+  /**
+   * Parse a HTTP request and returns the Content type from header if it exist
+   * @param request Valid HTTP request
+   * @return Content type
+   */
+  public static String parseContentType(String request) throws IllegalArgumentException{
     if (!validHTTP(request)) {
       throw new IllegalArgumentException("Not a valid HTTP request");
     }
@@ -29,6 +43,12 @@ public class HttpParse {
     return contentType;
   }
 
+  /**
+   * Checks if a HTTP request have valid amount of fields, it does not check the content
+   * of the fields
+   * @param httpString to check
+   * @return if it has valid amount of fields
+   */
   private static boolean validHTTP(String httpString) {
     if (httpString.length() < 1) {
       return false;

@@ -12,6 +12,10 @@ import javax.imageio.IIOException;
 
 public class ToggleServer {
 
+  /**
+   * Starts a toggle server on port 80 as default
+   * @throws PortUnreachableException if socket cant be opened on port 80
+   */
   public static void start() throws PortUnreachableException {
     int port = 80;
     try {
@@ -22,6 +26,11 @@ public class ToggleServer {
 
   }
 
+  /**
+   * Starts a toggle server on the port received
+   * @param port port to start server on
+   * @throws PortUnreachableException if socket cant be opened on port provided
+   */
   public static void start(int port) throws PortUnreachableException {
     try {
       runtime(port);
@@ -31,7 +40,6 @@ public class ToggleServer {
   }
 
   private static void runtime(int port) throws PortUnreachableException {
-
     String clientSentence;
     ServerSocket welcomeSocket;
     String clientLines = null;
