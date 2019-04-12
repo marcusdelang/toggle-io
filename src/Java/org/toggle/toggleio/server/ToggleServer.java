@@ -7,6 +7,7 @@ import java.net.PortUnreachableException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import javax.imageio.IIOException;
 
 public class ToggleServer {
@@ -43,27 +44,31 @@ public class ToggleServer {
     System.out.println("Server is running on port " + port);
     try {
       while (true) {
-        Socket connectionSocket = welcomeSocket.accept();
-        connectionSocket.setSoTimeout(5000);
-        System.out.println("Received request from " + connectionSocket);
-        BufferedReader fromClient =
-            new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
+        try {
+          Socket connectionSocket = welcomeSocket.accept();
+          connectionSocket.setSoTimeout(5000);
+          System.out.println("Received request from " + connectionSocket);
+          BufferedReader fromClient =
+              new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
 
-        StringBuilder sentenceBuilder = new StringBuilder();
-        while ((clientLines = fromClient.readLine()) != null) {
-          if (clientLines.isEmpty()) {
-            break;
+          StringBuilder sentenceBuilder = new StringBuilder();
+          while ((clientLines = fromClient.readLine()) != null) {
+            if (clientLines.isEmpty()) {
+              break;
+            }
+            sentenceBuilder.append(clientLines + "\n");
           }
-          sentenceBuilder.append(clientLines + "\n");
-        }
-        if (sentenceBuilder.length() > 0) {
-          sentenceBuilder.setLength(sentenceBuilder.length() - 1);
-        }
-        clientSentence = sentenceBuilder.toString();
+          if (sentenceBuilder.length() > 0) {
+            sentenceBuilder.setLength(sentenceBuilder.length() - 1);
+          }
+          clientSentence = sentenceBuilder.toString();
 
-        RequestHandler.handleRequest(connectionSocket, clientSentence);
-        fromClient.close();
-        connectionSocket.close();
+          RequestHandler.handleRequest(connectionSocket, clientSentence);
+          fromClient.close();
+          connectionSocket.close();
+        }catch (SocketTimeoutException ste){
+          System.out.println("ste");
+        }
       }
     } catch (SocketException se) {
       System.out.println("Could not close connection");
