@@ -68,7 +68,7 @@ public class ToggleServer {
           fromClient.close();
           connectionSocket.close();
         }catch (SocketTimeoutException ste){
-          System.out.println(ste);
+          System.out.println("Connection timed out!");
           connectionSocket.close();
         }
       }
