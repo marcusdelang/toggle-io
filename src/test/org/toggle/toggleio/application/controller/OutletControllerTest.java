@@ -6,36 +6,8 @@ import org.toggle.toggleio.application.model.ScriptRunner;
 import org.toggle.toggleio.application.model.TelldusScripts;
 
 class OutletControllerTest {
-
-  private OutletController outletController;
-  private String script;
-  private ScriptRunner scriptRunner;
-
-  @BeforeEach
-  void setUp() {
-    //ScriptRunner scriptRunner = new ScriptRunner();
-    //TelldusScript telldusScript = new TelldusScript();
-    outletController = new OutletController();
-    scriptRunner = new ScriptRunner();
-    script = TelldusScripts.on();
-  }
-
   @Test
   void isAlive() {
     assertTrue(OutletController.isAlive());
   }
-
-  @Test
-  void turnOn() {
-    assertEquals("tdtool --on 1", script);
-    assertTrue(ScriptRunner.runScript(script));
-  }
-
-  @Test
-  void turnOff() {
-    script = TelldusScripts.off();
-    assertEquals(script, "tdtool --off 1");
-    assertEquals(ScriptRunner.runScript(script), true);
-  }
-
 }

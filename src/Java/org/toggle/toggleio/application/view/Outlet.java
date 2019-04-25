@@ -9,10 +9,10 @@ public class Outlet {
   }
 
   public static boolean on() {
-    return OutletController.turnOn();
+    return OutletController.on();
   }
 
   public static boolean off() {
-    return OutletController.turnOff();
+    return OutletController.off();
   }
 }
