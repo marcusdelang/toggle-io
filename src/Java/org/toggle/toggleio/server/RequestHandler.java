@@ -11,12 +11,12 @@ import org.json.JSONObject;
 import org.toggle.toggleio.application.view.Outlet;
 
 /**
- * Parses a http request and sends back a response on socket received
+ * This class contains functions for handling a HTTP request that is meant for a telldus service
  */
 public class RequestHandler {
 
   /**
-   *
+   * Parses a request meant for telldus-io and returns a response on the connection from a given socket.
    * @param connectionSocket A socket that should receive the response
    * @param request A http request
    * @throws IOException Throws exception if unable to close or open socket

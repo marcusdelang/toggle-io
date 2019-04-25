@@ -4,14 +4,14 @@ import org.json.HTTP;
 import org.json.JSONObject;
 
 /**
- * Parses a HTTP request
+ * This class has functions that helps parse a HTTP request and its different fields
  */
 public class HttpParse {
 
   /**
    * Parse a HTTP request and returns the endpoint from header
    * @exception IllegalArgumentException not a valid http request
-   * @param request http request
+   * @param request HTTP request
    * @return endpoint
    */
   public static String parseUrlEndpoint(String request) throws IllegalArgumentException{
@@ -29,7 +29,7 @@ public class HttpParse {
 
   /**
    * Parse a HTTP request and returns the Content type from header if it exist
-   * @param request Valid HTTP request
+   * @param request HTTP request
    * @return Content type
    */
   public static String parseContentType(String request) throws IllegalArgumentException{

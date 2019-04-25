@@ -2,6 +2,10 @@ package org.toggle.toggleio.application.view;
 
 import org.toggle.toggleio.application.controller.OutletController;
 
+/**
+ * Class that functions controls a outlet
+ */
+
 public class Outlet {
 
   public static boolean isAlive() {

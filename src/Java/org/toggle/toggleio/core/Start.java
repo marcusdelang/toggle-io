@@ -3,6 +3,9 @@ package org.toggle.toggleio.core;
 import java.net.PortUnreachableException;
 import org.toggle.toggleio.server.ToggleServer;
 
+/**
+ * This class handles the startup of the toggle-io server
+ */
 public class Start {
 
   public static void main(String[] args) {

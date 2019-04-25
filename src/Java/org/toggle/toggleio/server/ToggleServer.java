@@ -10,10 +10,14 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import javax.imageio.IIOException;
 
+/**
+ * Class that contains a server that listens on a port using the SOCKET library.
+ * It will hand over all HTTP requests to the Telldus RequestHandler
+ */
 public class ToggleServer {
 
   /**
-   * Starts a toggle server on port 80 as default
+   * Starts a toggle-io server on port 80 as default
    * @throws PortUnreachableException if socket cant be opened on port 80
    */
   public static void start() throws PortUnreachableException {
@@ -23,11 +27,10 @@ public class ToggleServer {
     } catch (PortUnreachableException pue) {
       throw new PortUnreachableException("Could not open Socket on port " + port);
     }
-
   }
 
   /**
-   * Starts a toggle server on the port received
+   * Starts a toggle-io server on the port received
    * @param port port to start server on
    * @throws PortUnreachableException if socket cant be opened on port provided
    */

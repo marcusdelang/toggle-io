@@ -10,7 +10,11 @@ import java.io.IOException;
  */
 public class ScriptRunner {
 
-
+    /**
+     * Runs a given script on the operating systems terminal
+     * @param script to run
+     * @return true if the command was writen successfully
+     */
     public static boolean runScript(String script) {
 
         boolean success = true;

@@ -1,7 +1,8 @@
 package org.toggle.toggleio.server;
 
 /**
- * Valid HTTP responses in form of string
+ * This class contains functions that when called returns a valid HTTP response of
+ * a specified type.
  */
 public class HttpResponse {
 
