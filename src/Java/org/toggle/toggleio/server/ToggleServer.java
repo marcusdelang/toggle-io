@@ -16,11 +16,16 @@ import javax.imageio.IIOException;
  */
 public class ToggleServer {
 
+  RequestHandler requestHandler;
+
+  public ToggleServer(RequestHandler requestHandler){
+    this.requestHandler = requestHandler;
+  }
   /**
    * Starts a toggle-io server on port 80 as default
    * @throws PortUnreachableException if socket cant be opened on port 80
    */
-  public static void start() throws PortUnreachableException {
+  public void start() throws PortUnreachableException {
     int port = 80;
     try {
       runtime(port);
@@ -34,7 +39,7 @@ public class ToggleServer {
    * @param port port to start server on
    * @throws PortUnreachableException if socket cant be opened on port provided
    */
-  public static void start(int port) throws PortUnreachableException {
+  public void start(int port) throws PortUnreachableException {
     try {
       runtime(port);
     } catch (PortUnreachableException pue) {
@@ -42,7 +47,7 @@ public class ToggleServer {
     }
   }
 
-  private static void runtime(int port) throws PortUnreachableException {
+  private void runtime(int port) throws PortUnreachableException {
     String clientSentence;
     ServerSocket welcomeSocket;
     String clientLines = null;
@@ -75,7 +80,7 @@ public class ToggleServer {
           }
           clientSentence = sentenceBuilder.toString();
 
-          RequestHandler.handleRequest(connectionSocket, clientSentence);
+          requestHandler.handleRequest(connectionSocket, clientSentence);
           fromClient.close();
           connectionSocket.close();
         }catch (SocketTimeoutException ste){

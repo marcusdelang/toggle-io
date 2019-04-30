@@ -1,5 +1,6 @@
 package org.toggle.toggleio.application.view;
 
+import org.json.JSONObject;
 import org.toggle.toggleio.application.controller.OutletController;
 
 /**
@@ -7,16 +8,19 @@ import org.toggle.toggleio.application.controller.OutletController;
  */
 
 public class Outlet {
-
-  public static boolean isAlive() {
-    return OutletController.isAlive();
+  private OutletController controller;
+  public Outlet(OutletController controller){
+    this.controller = controller;
+  }
+  public JSONObject getStatus() {
+    return controller.status();
   }
 
-  public static boolean on() {
-    return OutletController.on();
+  public boolean on() {
+    return controller.on();
   }
 
-  public static boolean off() {
-    return OutletController.off();
+  public boolean off() {
+    return controller.off();
   }
 }
