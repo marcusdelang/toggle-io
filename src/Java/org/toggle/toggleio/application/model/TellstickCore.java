@@ -1,6 +1,7 @@
 package org.toggle.toggleio.application.model;
 
 
+
 import org.json.JSONObject;
 
 /**
@@ -12,7 +13,8 @@ public class TellstickCore {
   private JSONObject status;
 
   public TellstickCore(){
-    status.append("status", "off");
+    status = new JSONObject();
+    status.put("PowerStatus", "off");
   }
   public JSONObject getStatus() {
     return status;
@@ -23,9 +25,9 @@ public class TellstickCore {
    * of writing the command to a terminal, it does NOT return the the success of the command itself.
    * @return returns true if command was successfully executed in operating system terminal
    */
-  public static boolean on(){
+  public boolean on(){
     boolean success = ScriptRunner.runScript(TelldusScripts.on());
-    status.
+    status.put("PowerStatus","on");
     return success;
   }
   /**
@@ -33,8 +35,9 @@ public class TellstickCore {
    * of writing the command to a terminal, it does NOT return the the success of the command itself.
    * @return returns true if command was successfully executed in operating system terminal
    */
-  public static boolean off(){
+  public boolean off(){
     boolean success = ScriptRunner.runScript(TelldusScripts.off());
+    status.put("PowerStatus","off");
     return success;
   }
 

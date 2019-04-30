@@ -14,28 +14,34 @@ import org.toggle.toggleio.application.view.Outlet;
  * This class contains functions for handling a HTTP request that is meant for a telldus service
  */
 public class RequestHandler {
+  private Outlet outlet;
 
+
+  public RequestHandler(Outlet outlet){
+    this.outlet = outlet;
+  }
   /**
    * Parses a request meant for telldus-io and returns a response on the connection from a given socket.
    * @param connectionSocket A socket that should receive the response
    * @param request A http request
    * @throws IOException Throws exception if unable to close or open socket
    */
-  static void handleRequest(Socket connectionSocket, String request) throws IOException {
-    boolean goodRequest = false;
+  void handleRequest(Socket connectionSocket, String request) throws IOException {
+    JSONObject JSONResponse = null;
     String response = HttpResponse.httpBadRequest();
+    System.out.println("Endpoint: "+HttpParse.parseUrlEndpoint(request)+"\n");
     try {
-      goodRequest = decideAction(HttpParse.parseUrlEndpoint(request));
+      JSONResponse = decideAction(HttpParse.parseUrlEndpoint(request));
     } catch (IllegalArgumentException iae) {
       System.out.println("Invalid Request received");
     }
-    if (goodRequest) {
-      response = HttpResponse.httpOk();
+    if (JSONResponse != null) {
+      response = HttpResponse.httpOk() + JSONResponse.toString();
     }
     try {
       DataOutputStream outToClient =
           new DataOutputStream(connectionSocket.getOutputStream());
-
+      System.out.println("Responding with:\n" + response + "\n\n");
       outToClient.writeBytes(response);
       try {
         outToClient.close();
@@ -49,16 +55,18 @@ public class RequestHandler {
     }
   }
 
-  private static boolean decideAction(String endpoint) {
+  private JSONObject decideAction(String endpoint) {
     if (endpoint.equals("/on")) {
-      return Outlet.on();
-    } else if (endpoint.equals("/off")) {
-      return Outlet.off();
-    } else if (endpoint.equals("/isAlive")) {
-      return Outlet.isAlive();
-    } else {
-      return false;
+      if (outlet.on()) return outlet.getStatus();
+      else return null;
     }
+    else if (endpoint.equals("/off")) {
+      if(outlet.off()) return outlet.getStatus();
+      else return null;
+    }
+    else if (endpoint.equals("/status")) return outlet.getStatus();
+    else return null;
+
   }
 
 }

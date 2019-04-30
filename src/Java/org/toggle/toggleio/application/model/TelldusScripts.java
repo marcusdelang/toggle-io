@@ -10,7 +10,7 @@ public class TelldusScripts {
      * @return Script for turning device ON
      */
     public static String on(){
-        String scriptOn = "tdtool --on 1";
+        String scriptOn = "tdtool --on 2";
         return scriptOn;
     }
 
@@ -19,7 +19,7 @@ public class TelldusScripts {
      * @return Script for turning device OFF
      */
     public static String off(){
-        String scriptOff = "tdtool --off 1";
+        String scriptOff = "tdtool --off 2";
         return scriptOff;
     }
 }
