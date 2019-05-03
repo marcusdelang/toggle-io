@@ -21,6 +21,7 @@ public class Start {
       IdHandler.requestSlot();
     }catch (IOException ex){
       System.out.println(ex);
+      return;
     }
 
     if (args.length > 0) {
