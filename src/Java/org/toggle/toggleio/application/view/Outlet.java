@@ -9,6 +9,7 @@ import org.toggle.toggleio.application.controller.OutletController;
 
 public class Outlet {
   private OutletController controller;
+  //public Outlet(){}
   public Outlet(OutletController controller){
     this.controller = controller;
   }

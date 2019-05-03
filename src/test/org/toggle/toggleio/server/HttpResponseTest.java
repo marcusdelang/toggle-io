@@ -9,15 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class HttpResponseTest {
-
-  @BeforeEach
-  void setUp() {
-  }
-
-  @AfterEach
-  void tearDown() {
-  }
-
   @Test
   void httpOk() {
     final String expected =  "HTTP/1.1 200 OK"+"\n"+"\r\n";

@@ -1,6 +1,7 @@
 package org.toggle.toggleio.server;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.PortUnreachableException;
@@ -67,7 +68,8 @@ public class ToggleServer {
           System.out.println("Received request from " + connectionSocket);
           BufferedReader fromClient =
               new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
-
+          DataOutputStream outToClient =
+              new DataOutputStream(connectionSocket.getOutputStream());
           StringBuilder sentenceBuilder = new StringBuilder();
           while ((clientLines = fromClient.readLine()) != null) {
             if (clientLines.isEmpty()) {
@@ -80,7 +82,10 @@ public class ToggleServer {
           }
           clientSentence = sentenceBuilder.toString();
 
-          requestHandler.handleRequest(connectionSocket, clientSentence);
+          String response = requestHandler.handleRequest(clientSentence);
+          System.out.println("Responding with:\n" + response + "\n\n");
+
+          outToClient.writeBytes(response);
           fromClient.close();
           connectionSocket.close();
         }catch (SocketTimeoutException ste){

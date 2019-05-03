@@ -1,9 +1,11 @@
 package org.toggle.toggleio.core;
 
+import java.io.IOException;
 import java.net.PortUnreachableException;
 import org.toggle.toggleio.application.controller.OutletController;
 import org.toggle.toggleio.application.model.TellstickCore;
 import org.toggle.toggleio.application.view.Outlet;
+import org.toggle.toggleio.server.IdHandler;
 import org.toggle.toggleio.server.RequestHandler;
 import org.toggle.toggleio.server.ToggleServer;
 
@@ -13,6 +15,14 @@ import org.toggle.toggleio.server.ToggleServer;
 public class Start {
 
   public static void main(String[] args) {
+
+
+    try {
+      IdHandler.requestSlot();
+    }catch (IOException ex){
+      System.out.println(ex);
+    }
+
     if (args.length > 0) {
       try {
         ToggleServer toggleServer = new ToggleServer(new RequestHandler(new Outlet(new OutletController(new TellstickCore()))));

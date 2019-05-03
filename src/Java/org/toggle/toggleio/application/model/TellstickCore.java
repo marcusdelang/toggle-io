@@ -14,7 +14,7 @@ public class TellstickCore {
 
   public TellstickCore(){
     status = new JSONObject();
-    status.put("PowerStatus", "off");
+    this.off();
   }
   public JSONObject getStatus() {
     return status;
@@ -27,7 +27,7 @@ public class TellstickCore {
    */
   public boolean on(){
     boolean success = ScriptRunner.runScript(TelldusScripts.on());
-    status.put("PowerStatus","on");
+    status.put("status_power","on");
     return success;
   }
   /**
@@ -37,7 +37,7 @@ public class TellstickCore {
    */
   public boolean off(){
     boolean success = ScriptRunner.runScript(TelldusScripts.off());
-    status.put("PowerStatus","off");
+    status.put("status_power","off");
     return success;
   }
 
