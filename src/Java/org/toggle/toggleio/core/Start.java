@@ -3,10 +3,11 @@ package org.toggle.toggleio.core;
 import java.io.IOException;
 import java.net.PortUnreachableException;
 
+import org.json.simple.parser.ParseException;
 import org.toggle.toggleio.application.controller.OutletController;
 import org.toggle.toggleio.application.model.TellstickCore;
 import org.toggle.toggleio.application.view.Outlet;
-import org.toggle.toggleio.server.ApiRequester;
+import org.toggle.toggleio.server.ToggleApi;
 import org.toggle.toggleio.server.RequestHandler;
 import org.toggle.toggleio.server.ToggleServer;
 
@@ -24,9 +25,12 @@ public class Start {
     System.out.println(intNumberOfDevices);
     ts.sendCmd(1,"OFF");*/
     try {
-      ApiRequester.requestSlot();
+      ToggleApi.requestSlot();
     }catch (IOException ex){
-      System.out.println(ex);
+      System.out.println("Start: " + ex);
+      return;
+    }catch (ParseException pe){
+      System.out.println("Something is wrong with JSON file");
       return;
     }
 
