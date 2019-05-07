@@ -4,35 +4,38 @@ import java.io.*;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
+
 import org.json.simple.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class ApiRequester {
 
   final private static int DEFAULT_TOKEN_LENGTH = 256;
   final private static String CONFIG_FILE = "confg.json";
-  final private static String API_REGISTER_URL = "https://toggle-api.eu-gb.mybluemix.net/api/register";
-
+/*  For Testing Purposes
+  final private static String API_REGISTER_URL = "http://130.229.129.38/api/device/register";
+  final private static String API_UPDATE_URL = "http://130.229.129.38/api/device/update";
+*/
+  final private static String API_REGISTER_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/register";
+  final private static String API_UPDATE_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/update";
 
   public static void requestSlot() throws IOException {
     JSONObject jsonObject = JsonContact.getJSONFromFile(CONFIG_FILE);
     if (jsonObject == null) {
-      jsonObject = new JSONObject();
-      jsonObject.put("token", generateString(DEFAULT_TOKEN_LENGTH));
-      JsonContact.writeJSONToFile(jsonObject, CONFIG_FILE);
+      JsonContact.writeJSONToFile(sendRequest(), CONFIG_FILE);
     }
-    sendRequest(jsonObject);
+    else sendRequest(jsonObject);
   }
-  private static void sendRequest() throws IOException {
+  private static JSONObject sendRequest() throws IOException {
     URL url = null;
     try {
       url = new URL(API_REGISTER_URL);
       HttpURLConnection con = (HttpURLConnection)url.openConnection();
       con.setRequestMethod("POST");
-      con.setRequestProperty("Content-Type", "application/json");
       con.setDoOutput(true);
       try(OutputStream os = con.getOutputStream()) {
-        os.write(0);
       }
       try(BufferedReader br = new BufferedReader(
               new InputStreamReader(con.getInputStream(), "utf-8"))) {
@@ -42,10 +45,13 @@ public class ApiRequester {
           response.append(responseLine.trim());
         }
         System.out.println(response.toString());
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, String> map = mapper.readValue(response.toString(), Map.class);
+        return new JSONObject(map);
       }
     }catch(Exception e){
       System.out.println(e);
-      throw new ConnectException("Could not connect to API");
+      throw new ConnectException("Could not connect to API NOT JSON" + e);
     }
 
 
@@ -53,7 +59,7 @@ public class ApiRequester {
   private static void sendRequest(JSONObject jsonObject) throws IOException,ConnectException {
    URL url = null;
     try {
-      url = new URL(API_REGISTER_URL);
+      url = new URL(API_UPDATE_URL);
       HttpURLConnection con = (HttpURLConnection)url.openConnection();
       con.setRequestMethod("POST");
       con.setRequestProperty("Content-Type", "application/json");
@@ -73,7 +79,7 @@ public class ApiRequester {
       }
     }catch(Exception e){
       System.out.println(e);
-      throw new ConnectException("Could not connect to API");
+      throw new ConnectException("Could not connect to API JSON");
     }
 
   }
