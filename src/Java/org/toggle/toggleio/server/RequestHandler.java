@@ -27,30 +27,20 @@ public class RequestHandler {
   public String handleRequest(String request) {
     JSONObject JSONResponse = null;
     String response = HttpResponse.httpBadRequest();
-    System.out.println("Endpoint: "+HttpParse.parseUrlEndpoint(request)+"\n");
-    try {
-      JSONResponse = decideAction(HttpParse.parseUrlEndpoint(request));
-    } catch (IllegalArgumentException iae) {
-      System.out.println("Invalid Request received");
-    }
-    if (JSONResponse != null) {
-      response = HttpResponse.httpOk() + JSONResponse.toString();
-    }
-    return response;
-  }
+    String endpoint = HttpParse.parseUrlEndpoint(request);
+    System.out.println("Endpoint: "+endpoint+"\n");
 
-  private JSONObject decideAction(String endpoint) {
     if (endpoint.equals("/on")) {
-      if (outlet.on()) return outlet.getStatus();
-      else return null;
+      if (outlet.on()) response = HttpResponse.httpOk();
+      else return response;
     }
     else if (endpoint.equals("/off")) {
-      if(outlet.off()) return outlet.getStatus();
-      else return null;
+      if(outlet.off()) response = HttpResponse.httpOk();
+      else return response;
     }
-    else if (endpoint.equals("/status")) return outlet.getStatus();
-    else return null;
+    else if (endpoint.equals("/status")) response = HttpResponse.httpOk() + JSONResponse.toString();
+    else return response;
 
+    return response;
   }
-
 }
