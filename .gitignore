@@ -16,5 +16,5 @@ out/
 # Maven
 log/
 target/
-confg.json
-confg.json
+.json
+
