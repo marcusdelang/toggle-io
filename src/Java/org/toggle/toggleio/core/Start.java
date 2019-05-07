@@ -2,10 +2,11 @@ package org.toggle.toggleio.core;
 
 import java.io.IOException;
 import java.net.PortUnreachableException;
+
 import org.toggle.toggleio.application.controller.OutletController;
 import org.toggle.toggleio.application.model.TellstickCore;
 import org.toggle.toggleio.application.view.Outlet;
-import org.toggle.toggleio.server.IdHandler;
+import org.toggle.toggleio.server.ApiRequester;
 import org.toggle.toggleio.server.RequestHandler;
 import org.toggle.toggleio.server.ToggleServer;
 
@@ -15,10 +16,15 @@ import org.toggle.toggleio.server.ToggleServer;
 public class Start {
 
   public static void main(String[] args) {
+    /*boolean debug = false;
 
-
+    if ((args.length>0&&args[0].equals("-debug")) || (args.length>1&&args[1].equals("-debug"))) debug = true;
+    Tellstick ts = new Tellstick(debug);
+    int intNumberOfDevices = ts.getNumberOfDevices();
+    System.out.println(intNumberOfDevices);
+    ts.sendCmd(1,"OFF");*/
     try {
-      IdHandler.requestSlot();
+      ApiRequester.requestSlot();
     }catch (IOException ex){
       System.out.println(ex);
       return;
