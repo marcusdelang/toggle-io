@@ -7,7 +7,7 @@ import org.toggle.toggleio.application.model.TellstickCore;
 import org.toggle.toggleio.application.view.Outlet;
 
 public class OutletStub extends Outlet {
-  JSONObject status;
+  private JSONObject status;
 
   public OutletStub(OutletController controller) throws JSONException {
       super(new OutletController(new TellstickCore()));
