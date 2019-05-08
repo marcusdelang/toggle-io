@@ -26,7 +26,7 @@ public class ToggleServer {
    * @throws PortUnreachableException if socket cant be opened on port 80
    */
   public void start() throws PortUnreachableException {
-    int port = 80;
+    int port = 8080;
     try {
       runtime(port);
     } catch (PortUnreachableException pue) {
