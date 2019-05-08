@@ -16,16 +16,15 @@ import org.toggle.toggleio.server.ToggleServer;
  */
 public class Start {
 
-  public static void main(String[] args) {
-    /*boolean debug = false;
+  final private static String API_REGISTER_URL = "http://130.229.185.13/api/device/register";
+  final private static String API_UPDATE_URL = "http://130.229.185.13/api/device/update";
 
-    if ((args.length>0&&args[0].equals("-debug")) || (args.length>1&&args[1].equals("-debug"))) debug = true;
-    Tellstick ts = new Tellstick(debug);
-    int intNumberOfDevices = ts.getNumberOfDevices();
-    System.out.println(intNumberOfDevices);
-    ts.sendCmd(1,"OFF");*/
+  // final private static String API_REGISTER_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/register";
+  // final private static String API_UPDATE_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/update";
+  public static void main(String[] args) {
+
     try {
-      ToggleApi.requestSlot();
+      ToggleApi.requestSlot(API_REGISTER_URL, API_UPDATE_URL);
     }catch (IOException ex){
       System.out.println("Start: " + ex);
       return;

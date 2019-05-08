@@ -15,7 +15,11 @@ class RequestHandlerTest {
 
   @BeforeEach
   void setUp() {
-    reqHandler = new RequestHandler(new OutletStub(new OutletController(new TellstickCore())));
+    try {
+      reqHandler = new RequestHandler(new OutletStub(new OutletController(new TellstickCore())));
+    }catch (Exception e){
+    }
+
   }
 
 
@@ -23,7 +27,7 @@ class RequestHandlerTest {
   void handleRequestCorrectON() {
     final String input =
         "POST /on HTTP/1.1\n" + "\r\n";
-    final String expected = "HTTP/1.1 200 OK" + "\n\r\n"+ "{\"status_power\":\"on\"}";
+    final String expected = "HTTP/1.1 200 OK" + "\n\r\n";
     final String actual = reqHandler.handleRequest(input);
 
     assertEquals(expected,actual);
@@ -32,7 +36,7 @@ class RequestHandlerTest {
   void handleRequestCorrectOFF() {
     final String input =
         "POST /off HTTP/1.1\n" + "\r\n";
-    final String expected = "HTTP/1.1 200 OK" + "\n\r\n"+ "{\"status_power\":\"off\"}";
+    final String expected = "HTTP/1.1 200 OK" + "\n\r\n";
     final String actual = reqHandler.handleRequest(input);
 
     assertEquals(expected,actual);

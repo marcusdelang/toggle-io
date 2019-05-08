@@ -9,7 +9,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import javax.imageio.IIOException;
 
 /**
  * Class that contains a server that listens on a port using the SOCKET library.
@@ -27,7 +26,7 @@ public class ToggleServer {
    * @throws PortUnreachableException if socket cant be opened on port 80
    */
   public void start() throws PortUnreachableException {
-    int port = 8080;
+    int port = 80;
     try {
       runtime(port);
     } catch (PortUnreachableException pue) {
@@ -94,7 +93,7 @@ public class ToggleServer {
         }
       }
     } catch (SocketException se) {
-      System.out.println("Could not close connection");
+      System.out.println("Could not close connection"+ se);
     } catch (IOException ioe) {
       System.out.println("Something went wrong" + ioe);
     }

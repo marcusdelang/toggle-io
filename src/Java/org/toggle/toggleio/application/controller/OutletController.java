@@ -1,8 +1,6 @@
 package org.toggle.toggleio.application.controller;
 
 import org.json.JSONObject;
-import org.toggle.toggleio.application.model.ScriptRunner;
-import org.toggle.toggleio.application.model.TelldusScripts;
 import org.toggle.toggleio.application.model.TellstickCore;
 
 public class OutletController {

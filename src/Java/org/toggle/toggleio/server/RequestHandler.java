@@ -1,12 +1,5 @@
 package org.toggle.toggleio.server;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.Socket;
-import java.net.SocketException;
-import java.util.stream.Stream;
-import javax.imageio.IIOException;
-import org.json.HTTP;
 import org.json.JSONObject;
 import org.toggle.toggleio.application.view.Outlet;
 
@@ -26,8 +19,13 @@ public class RequestHandler {
    */
   public String handleRequest(String request) {
     JSONObject JSONResponse = null;
+    String endpoint;
     String response = HttpResponse.httpBadRequest();
-    String endpoint = HttpParse.parseUrlEndpoint(request);
+    try {
+       endpoint = HttpParse.parseUrlEndpoint(request);
+    }catch (IllegalArgumentException iae){
+      return response;
+    }
     System.out.println("Endpoint: "+endpoint+"\n");
 
     if (endpoint.equals("/on")) {
@@ -38,7 +36,10 @@ public class RequestHandler {
       if(outlet.off()) response = HttpResponse.httpOk();
       else return response;
     }
-    else if (endpoint.equals("/status")) response = HttpResponse.httpOk() + JSONResponse.toString();
+    else if (endpoint.equals("/status")){
+      JSONResponse = outlet.getStatus();
+      response = HttpResponse.httpOk(JSONResponse);
+    }
     else return response;
 
     return response;

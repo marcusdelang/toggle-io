@@ -4,26 +4,32 @@ import java.io.*;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
-
-import com.sun.media.sound.InvalidDataException;
 import org.json.simple.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.parser.ParseException;
 
-
+/**
+ * This class is responsible for register the ip on the API or update the IP on the API with help of the token received.
+ * The class requires that the toggle-api is up and running or else you will get a ConnectionException
+ */
 public class ToggleApi {
 
   final private static int DEFAULT_TOKEN_LENGTH = 256;
   final private static String CONFIG_FILE = "confg.json";
-/*  For Testing Purposes
-  final private static String API_REGISTER_URL = "http://130.229.129.38/api/device/register";
-  final private static String API_UPDATE_URL = "http://130.229.129.38/api/device/update";
-*/
-  final private static String API_REGISTER_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/register";
-  final private static String API_UPDATE_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/update";
+  //For Testing Purposes
 
-  public static void requestSlot() throws IOException, ParseException {
+
+  /**
+   * This function will request a new slot on the API or
+   * update the IP on the API to the current one if the TOKEN is NOT expired
+   * @param registerUrl
+   * @param updateUrl
+   * @throws IOException
+   * @throws ParseException
+   */
+  public static void requestSlot(String registerUrl, String updateUrl) throws IOException, ParseException {
     JSONObject jsonObject;
     try {
       jsonObject = JsonFile.read(CONFIG_FILE);
@@ -32,7 +38,8 @@ public class ToggleApi {
     }
     if (jsonObject == null) {
       try {
-        jsonObject = sendRequest();
+        jsonObject = sendRequest(registerUrl);
+
       }catch (Exception e){
         throw e;
       }
@@ -40,9 +47,9 @@ public class ToggleApi {
     }
     else {
       try {
-        sendRequest(jsonObject);
-      }catch (InvalidDataException ide){
-        jsonObject = sendRequest();
+        sendRequest(updateUrl,jsonObject);
+      }catch (InvalidObjectException ide){
+        jsonObject = sendRequest(registerUrl);
         JsonFile.write(jsonObject, CONFIG_FILE);
       }
       catch (IOException ie){
@@ -51,10 +58,10 @@ public class ToggleApi {
     }
 
   }
-  private static JSONObject sendRequest() throws IOException {
+  private static JSONObject sendRequest(String registerUrl) throws IOException {
     URL url = null;
     try {
-      url = new URL(API_REGISTER_URL);
+      url = new URL(registerUrl);
       HttpURLConnection con = (HttpURLConnection)url.openConnection();
       con.setRequestMethod("POST");
       con.setDoOutput(true);
@@ -70,7 +77,9 @@ public class ToggleApi {
         System.out.println(response.toString());
         ObjectMapper mapper = new ObjectMapper();
         Map<String, String> map = mapper.readValue(response.toString(), Map.class);
-        return new JSONObject(map);
+       Map tokenMap = new HashMap();
+       tokenMap.put("token", map.get("token"));
+        return new JSONObject(tokenMap);
       }
     }
     catch(Exception e){
@@ -79,10 +88,10 @@ public class ToggleApi {
 
 
   }
-  private static void sendRequest(JSONObject jsonObject) throws IOException {
+  private static void sendRequest(String updateUrl,JSONObject jsonObject) throws IOException {
    URL url = null;
     try {
-      url = new URL(API_UPDATE_URL);
+      url = new URL(updateUrl);
       HttpURLConnection con = (HttpURLConnection)url.openConnection();
       con.setRequestMethod("POST");
       con.setRequestProperty("Content-Type", "application/json");
@@ -92,7 +101,7 @@ public class ToggleApi {
         os.write(input, 0, input.length);
       }
 
-      if(con.getResponseCode()==418)throw new InvalidDataException();
+      if(con.getResponseCode()==418)throw new InvalidObjectException("no");
       try(BufferedReader br = new BufferedReader(
           new InputStreamReader(con.getInputStream(), "utf-8"))) {
         StringBuilder response = new StringBuilder();
@@ -103,11 +112,11 @@ public class ToggleApi {
 
         System.out.println(response.toString());
       }
-    }catch (InvalidDataException ide) {
+    }catch (InvalidObjectException ide) {
     throw ide;
     }
     catch (Exception e){
-      throw new ConnectException("Could not connect to API JSON");
+      throw new ConnectException("Could not connect to API");
     }
 
   }

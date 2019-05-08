@@ -2,7 +2,9 @@ package org.toggle.toggleio.application.model;
 
 
 
+import org.json.JSONException;
 import org.json.JSONObject;
+import net.jstick.api.Tellstick;
 
 /**
  * Class that performs operations on the tellstick using the operating systems terminal and calling
@@ -10,10 +12,14 @@ import org.json.JSONObject;
  */
 public class TellstickCore {
 
+  private final static String OUTLET_ON = "ON";
+  private final static String OUTLET_OFF = "OFF";
   private JSONObject status;
+  private Tellstick ts;
 
   public TellstickCore(){
     status = new JSONObject();
+    ts = new Tellstick(false);
     this.off();
   }
   public JSONObject getStatus() {
@@ -26,8 +32,25 @@ public class TellstickCore {
    * @return returns true if command was successfully executed in operating system terminal
    */
   public boolean on(){
+    if  (System.getProperty("os.name").equals("Linux")){
+    int stat = ts.sendCmd(1, OUTLET_ON);
+    if(stat == 0) {
+      try {
+        status.put("status_power","on");
+      }catch (JSONException e){
+        return false;
+      }
+
+      return true;
+    }
+    else return false;
+    }
     boolean success = ScriptRunner.runScript(TelldusScripts.on());
-    status.put("status_power","on");
+    try {
+      status.put("status_power","on");
+    }catch (Exception e){
+      return false;
+    }
     return success;
   }
   /**
@@ -36,8 +59,25 @@ public class TellstickCore {
    * @return returns true if command was successfully executed in operating system terminal
    */
   public boolean off(){
+    if  (System.getProperty("os.name").equals("Linux")){
+      int stat = ts.sendCmd(1, OUTLET_OFF);
+      if(stat == 0) {
+        try {
+          status.put("status_power", "off");
+        }catch (JSONException e){
+          return false;
+        }
+
+        return true;
+      }
+      else return false;
+    }
     boolean success = ScriptRunner.runScript(TelldusScripts.off());
-    status.put("status_power","off");
+    try {
+      status.put("status_power","off");
+    }catch (Exception e){
+      return false;
+    }
     return success;
   }
 
