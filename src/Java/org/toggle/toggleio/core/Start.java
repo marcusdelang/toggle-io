@@ -16,14 +16,15 @@ import org.toggle.toggleio.server.ToggleServer;
  */
 public class Start {
 
-  final private static String API_REGISTER_URL = "http://130.229.185.13/api/device/register";
-  final private static String API_UPDATE_URL = "http://130.229.185.13/api/device/update";
+  final private static String API_REGISTER_URL = "http://130.229.151.183/api/device/register";
+  final private static String API_UPDATE_URL = "http://130.229.151.183/api/device/update";
 
   // final private static String API_REGISTER_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/register";
   // final private static String API_UPDATE_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/update";
   public static void main(String[] args) {
 
     try {
+      System.out.println("Requesting slot!\n");
       ToggleApi.requestSlot(API_REGISTER_URL, API_UPDATE_URL);
     }catch (IOException ex){
       System.out.println("Start: " + ex);

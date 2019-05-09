@@ -16,6 +16,13 @@
     </build>
     <dependencies>
         <dependency>
+            <groupId>jstick</groupId>
+            <artifactId>jstickapi</artifactId>
+            <scope>system</scope>
+            <version>1.7</version>
+            <systemPath>${basedir}/libs/jstick-api-1.7.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>org.mock-server</groupId>
             <artifactId>mockserver-maven-plugin</artifactId>
             <version>5.5.1</version>

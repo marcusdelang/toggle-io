@@ -3,6 +3,7 @@ package org.toggle.toggleio.server;
 import org.json.JSONObject;
 import org.toggle.toggleio.application.view.Outlet;
 
+
 /**
  * This class contains functions for handling a HTTP request that is meant for a telldus service
  */
