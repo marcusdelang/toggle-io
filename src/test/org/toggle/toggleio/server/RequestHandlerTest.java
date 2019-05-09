@@ -18,8 +18,9 @@ class RequestHandlerTest {
     @Test
     void handleRequestCorrectON() {
         final String input =
-                "POST /on HTTP/1.1\n"+"Content-Type: application/json\n" + "\n\n"
-                +"{\"token\":\"abcde12345\"}";
+                "POST /on HTTP/1.1\n" + "Content-Type: application/json\n"
+                        + "\r\n"
+                        + "{\"token\":\"abcde12345\"}";
 
         final String expected = "HTTP/1.1 200 OK" + "\n\r\n";
         try {
@@ -34,7 +35,10 @@ class RequestHandlerTest {
     @Test
     void handleRequestCorrectOFF() {
         final String input =
-                "POST /off HTTP/1.1\n" + "\r\n";
+                "POST /off HTTP/1.1\n"
+                        + "Content-Type: application/json\n"
+                        + "\r\n"
+                        + "{\"token\":\"abcde12345\"}";
         final String expected = "HTTP/1.1 200 OK" + "\n\r\n";
         try {
             final String actual = requestHandler.handleRequest(input);
@@ -48,10 +52,13 @@ class RequestHandlerTest {
     @Test
     void handleRequestCorrectSTATUS() {
         final String input =
-                "POST /status HTTP/1.1\n" + "\r\n";
+                "POST /status HTTP/1.1\n" + "Content-Type: application/json\n"
+                        + "\r\n"
+                        + "{\"token\":\"abcde12345\"}";
+
         final String expected = "HTTP/1.1 200 OK\n" + "Content-Type: application/json\n" +
-                "\n" +
-                "{\"status_power\":\"off\"}";
+                "\r\n" +
+                "{\"status_power\":\"ON\"}";
         try {
             final String actual = requestHandler.handleRequest(input);
             assertEquals(expected, actual);

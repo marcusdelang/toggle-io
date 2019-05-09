@@ -30,7 +30,12 @@ public class RequestHandler {
      */
     public String handleRequest(String request) throws IOException, JSONException {
         String response = HttpResponse.httpBadRequest();
-        if(!HttpParse.parseContentType(request).equals("application/json")){
+
+        try {
+            if(!HttpParse.parseContentType(request).equals("application/json")){
+                return response;
+            }
+        }catch (Exception e){
             return response;
         }
         org.json.simple.JSONObject jsonConfig = controller.readJSON(CONFIG_FILE);

@@ -22,7 +22,7 @@ public class HttpResponse {
    */
   public static String httpOk(JSONObject jsonObject) {
     String okResponse = "HTTP/1.1 200 OK\n"  +
-            "content-type: application/json\n" +
+            "Content-Type: application/json\n" +
             "\r\n"+
             jsonObject.toString();
     return okResponse;
