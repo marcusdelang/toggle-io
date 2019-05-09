@@ -1,4 +1,4 @@
-package org.toggle.toggleio.server;
+package org.toggle.toggleio.core;
 
 import java.io.*;
 import java.net.ConnectException;
@@ -6,6 +6,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import net.jstick.api.Tellstick;
 import org.json.simple.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.parser.ParseException;
@@ -30,6 +32,13 @@ public class ToggleApi {
    * @throws ParseException
    */
   public static void requestSlot(String registerUrl, String updateUrl) throws IOException, ParseException {
+    Tellstick tellstick = new Tellstick();
+    int numberOfDevices = tellstick.getNumberOfDevices();
+    if(numberOfDevices==0)throw new IOException();
+    else if (numberOfDevices==1) registerOne(registerUrl, updateUrl, tellstick);
+    else registerMultiple(registerUrl, updateUrl, tellstick);
+  }
+  private static void registerMultiple(String registerUrl, String updateUrl, Tellstick tellstick)throws IOException, ParseException{
     JSONObject jsonObject;
     try {
       jsonObject = JsonFile.read(CONFIG_FILE);
@@ -56,7 +65,34 @@ public class ToggleApi {
         throw ie;
       }
     }
+  }
+  private static void registerOne(String registerUrl, String updateUrl, Tellstick tellstick) throws IOException, ParseException{
+    JSONObject jsonObject;
+    try {
+      jsonObject = JsonFile.read(CONFIG_FILE);
+    }catch (ParseException pe){
+      throw pe;
+    }
+    if (jsonObject == null) {
+      try {
+        jsonObject = sendRequest(registerUrl);
 
+      }catch (Exception e){
+        throw e;
+      }
+      JsonFile.write(jsonObject, CONFIG_FILE);
+    }
+    else {
+      try {
+        sendRequest(updateUrl,jsonObject);
+      }catch (InvalidObjectException ide){
+        jsonObject = sendRequest(registerUrl);
+        JsonFile.write(jsonObject, CONFIG_FILE);
+      }
+      catch (IOException ie){
+        throw ie;
+      }
+    }
   }
   private static JSONObject sendRequest(String registerUrl) throws IOException {
     URL url = null;

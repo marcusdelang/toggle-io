@@ -1,24 +1,21 @@
 package org.toggle.toggleio.application.controller;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.toggle.toggleio.application.model.TellstickCore;
 
 public class OutletController {
-    private TellstickCore core;
-    public OutletController(TellstickCore core){
-        this.core = core;
-    }
     /**
      * Returns device status depending on type of device
      * @return JSONObject
      */
-    public JSONObject status(){
-        return core.getStatus();
+    public static JSONObject status(int id)throws JSONException {
+        return TellstickCore.getStatus(id);
     }
-    public boolean on(){
-        return core.on();
+    public static boolean on(int id){
+        return TellstickCore.on(id);
     }
-    public boolean off(){
-        return core.off();
+    public static boolean off(int id){
+        return TellstickCore.off(id);
     }
 }

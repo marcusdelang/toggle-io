@@ -1,7 +1,6 @@
 package org.toggle.toggleio.application.model;
 
 
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import net.jstick.api.Tellstick;
@@ -12,73 +11,59 @@ import net.jstick.api.Tellstick;
  */
 public class TellstickCore {
 
-  private final static String OUTLET_ON = "ON";
-  private final static String OUTLET_OFF = "OFF";
-  private JSONObject status;
-  private Tellstick ts;
+    private final static String OUTLET_ON = "ON";
+    private final static String OUTLET_OFF = "OFF";
 
-  public TellstickCore()throws Exception{
-    status = new JSONObject();
-    ts = new Tellstick(false);
-    status.put("status_power", "unknown");
-  }
-  public JSONObject getStatus() {
-    return status;
-  }
-
-  /**
-   * Turns device with id 1 on tellduscenter ON using connected tellstick and gives feedback on the success
-   * of writing the command to a terminal, it does NOT return the the success of the command itself.
-   * @return returns true if command was successfully executed in operating system terminal
-   */
-  public boolean on(){
-    if  (System.getProperty("os.name").equals("Linux")){
-    int stat = ts.sendCmd(1, OUTLET_ON);
-    if(stat == 0) {
-      try {
-        status.put("status_power","on");
-      }catch (JSONException e){
-        return false;
-      }
-
-      return true;
-    }
-    else return false;
-    }
-    boolean success = ScriptRunner.runScript(TelldusScripts.on());
-    try {
-      status.put("status_power","on");
-    }catch (Exception e){
-      return false;
-    }
-    return success;
-  }
-  /**
-   * Turns device with id 1 on tellduscenter OFF using connected tellstick and gives feedback on the success
-   * of writing the command to a terminal, it does NOT return the the success of the command itself.
-   * @return returns true if command was successfully executed in operating system terminal
-   */
-  public boolean off(){
-    if  (System.getProperty("os.name").equals("Linux")){
-      int stat = ts.sendCmd(1, OUTLET_OFF);
-      if(stat == 0) {
+    public static JSONObject getStatus(int id) throws JSONException {
         try {
-          status.put("status_power", "off");
-        }catch (JSONException e){
-          return false;
-        }
+            JSONObject jsonObject = new JSONObject();
+            if (System.getProperty("os.name").equals("Linux")) {
+                Tellstick tellstick = new Tellstick();
 
-        return true;
-      }
-      else return false;
+                jsonObject.put("status_power", tellstick.getLastCmd(id));
+                tellstick.close();
+                return jsonObject;
+            }
+            jsonObject.put("status_power", "UNKNOWN");
+            return jsonObject;
+        }
+        catch (JSONException jsonE){
+            throw new JSONException("Something went wrong with tellstick.getLastCmd");
+        }
     }
-    boolean success = ScriptRunner.runScript(TelldusScripts.off());
-    try {
-      status.put("status_power","off");
-    }catch (Exception e){
-      return false;
+
+    /**
+     * Turns device with id 1 on tellduscenter ON using connected tellstick and gives feedback on the success
+     * of writing the command to a terminal, it does NOT return the the success of the command itself.
+     *
+     * @return returns true if command was successfully executed in operating system terminal
+     */
+    public static boolean on(int id) {
+        return sendCommand(id, OUTLET_ON);
     }
-    return success;
-  }
+
+    /**
+     * Turns device with id 1 on tellduscenter OFF using connected tellstick and gives feedback on the success
+     * of writing the command to a terminal, it does NOT return the the success of the command itself.
+     *
+     * @return returns true if command was successfully executed in operating system terminal
+     */
+    public static boolean off(int id) {
+        return sendCommand(id, OUTLET_OFF);
+    }
+
+    private static boolean sendCommand(int id, String action) {
+        if (System.getProperty("os.name").equals("Linux")) {
+            Tellstick tellstick = new Tellstick();
+            tellstick.sendCmd(id, action);
+            return true;
+        }
+        boolean success = ScriptRunner.runScript(TelldusScripts.on());
+        try {
+        } catch (Exception e) {
+            return false;
+        }
+        return success;
+    }
 
 }

@@ -1,4 +1,4 @@
-package org.toggle.toggleio.server;
+package org.toggle.toggleio.core;
 
 
 import org.json.simple.JSONObject;

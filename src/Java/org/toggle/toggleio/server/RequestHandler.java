@@ -1,49 +1,52 @@
 package org.toggle.toggleio.server;
 
+import org.json.JSONException;
 import org.json.JSONObject;
-import org.toggle.toggleio.application.view.Outlet;
+import org.json.simple.parser.ParseException;
+import org.toggle.toggleio.application.controller.OutletController;
+import org.toggle.toggleio.core.JsonFile;
+
+import java.io.IOException;
 
 
 /**
  * This class contains functions for handling a HTTP request that is meant for a telldus service
  */
 public class RequestHandler {
-  private Outlet outlet;
+    final private static String CONFIG_FILE = "confg.json";
 
-  public RequestHandler(Outlet outlet){
-    this.outlet = outlet;
-  }
-  /**
-   * Parses a request meant for telldus-io and returns a response on the connection from a given socket.
-   * @param request A http request
-   * @return String HTTP response based on request received
-   */
-  public String handleRequest(String request) {
-    JSONObject JSONResponse = null;
-    String endpoint;
-    String response = HttpResponse.httpBadRequest();
-    try {
-       endpoint = HttpParse.parseUrlEndpoint(request);
-    }catch (IllegalArgumentException iae){
-      return response;
-    }
-    System.out.println("Endpoint: "+endpoint+"\n");
+    /**
+     * Parses a request meant for telldus-io and returns a response on the connection from a given socket.
+     *
+     * @param request A http request
+     * @return String HTTP response based on request received
+     */
+    public static String handleRequest(String request) throws IOException,ParseException, JSONException {
+        org.json.simple.JSONObject jsonConfig = JsonFile.read(CONFIG_FILE);
 
-    if (endpoint.equals("/on")) {
-      if (outlet.on()) response = HttpResponse.httpOk();
-      else response = HttpResponse.httpInternalServerError();
+        JSONObject JSONRequest = HttpParse.parseJSON(request);
+        String token = (String) JSONRequest.get("token");
+        int id = (int) jsonConfig.get(token);
+        String endpoint;
+        String response = HttpResponse.httpBadRequest();
+        try {
+            endpoint = HttpParse.parseUrlEndpoint(request);
+        } catch (IllegalArgumentException iae) {
+            return response;
+        }
+        System.out.println("Endpoint: " + endpoint + "\n");
 
-    }
-    else if (endpoint.equals("/off")) {
-      if(outlet.off()) response = HttpResponse.httpOk();
-      else response = HttpResponse.httpInternalServerError();
-    }
-    else if (endpoint.equals("/status")){
-      JSONResponse = outlet.getStatus();
-      response = HttpResponse.httpOk(JSONResponse);
-    }
-    else return response;
+        if (endpoint.equals("/on")) {
+            if (OutletController.on(id)) response = HttpResponse.httpOk();
+            else response = HttpResponse.httpInternalServerError();
 
-    return response;
-  }
+        } else if (endpoint.equals("/off")) {
+            if (OutletController.off(id)) response = HttpResponse.httpOk();
+            else response = HttpResponse.httpInternalServerError();
+        } else if (endpoint.equals("/status")) {
+            response = HttpResponse.httpOk(OutletController.status(id));
+        } else return response;
+
+        return response;
+    }
 }

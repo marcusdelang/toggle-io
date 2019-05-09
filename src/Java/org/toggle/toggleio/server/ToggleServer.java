@@ -1,5 +1,8 @@
 package org.toggle.toggleio.server;
 
+import org.json.JSONException;
+import org.json.simple.parser.ParseException;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -16,16 +19,11 @@ import java.net.SocketTimeoutException;
  */
 public class ToggleServer {
 
-  RequestHandler requestHandler;
-
-  public ToggleServer(RequestHandler requestHandler){
-    this.requestHandler = requestHandler;
-  }
   /**
    * Starts a toggle-io server on port 80 as default
    * @throws PortUnreachableException if socket cant be opened on port 80
    */
-  public void start() throws PortUnreachableException {
+  public static void start() throws PortUnreachableException {
     int port = 8080;
     try {
       runtime(port);
@@ -39,7 +37,7 @@ public class ToggleServer {
    * @param port port to start server on
    * @throws PortUnreachableException if socket cant be opened on port provided
    */
-  public void start(int port) throws PortUnreachableException {
+  public static void start(int port) throws PortUnreachableException {
     try {
       runtime(port);
     } catch (PortUnreachableException pue) {
@@ -47,10 +45,11 @@ public class ToggleServer {
     }
   }
 
-  private void runtime(int port) throws PortUnreachableException {
+  private static void runtime(int port) throws PortUnreachableException {
     String clientSentence;
     ServerSocket welcomeSocket;
     String clientLines = null;
+    String response = null;
 
     try {
       welcomeSocket = new ServerSocket(port);
@@ -72,8 +71,7 @@ public class ToggleServer {
           StringBuilder sentenceBuilder = new StringBuilder();
           while ((clientLines = fromClient.readLine()) != null) {
             if (clientLines.isEmpty()) {
-              break;
-            }
+              break;            }
             sentenceBuilder.append(clientLines + "\n");
           }
           if (sentenceBuilder.length() > 0) {
@@ -81,21 +79,31 @@ public class ToggleServer {
           }
           clientSentence = sentenceBuilder.toString();
 
-          String response = requestHandler.handleRequest(clientSentence);
+          try {
+            response = RequestHandler.handleRequest(clientSentence);
+          }catch (ParseException | JSONException pe){
+            response = HttpResponse.httpInternalServerError();
+            System.out.println("Responding with:\n" + response + "\n\n");
+            outToClient.writeBytes(response);
+            throw pe;
+          }
           System.out.println("Responding with:\n" + response + "\n\n");
-
           outToClient.writeBytes(response);
           fromClient.close();
           connectionSocket.close();
         }catch (SocketTimeoutException ste){
           System.out.println("Connection timed out!");
           connectionSocket.close();
+        }catch (ParseException|JSONException pe){
+          System.out.println("Something is wrong with the JSON file!");
+          connectionSocket.close();
+          return;
         }
       }
     } catch (SocketException se) {
-      System.out.println("Could not close connection"+ se);
+      System.out.println("Could not close connection "+ se);
     } catch (IOException ioe) {
-      System.out.println("Something went wrong" + ioe);
+      System.out.println("Something went wrong with writing or reading output " + ioe);
     }
   }
 }
