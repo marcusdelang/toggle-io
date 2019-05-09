@@ -52,7 +52,7 @@ public class HttpParse {
     if (!validHTTP(request)) {
       throw new IllegalArgumentException("Not a valid HTTP request");
     }
-    if(!parseContentType(request).equals("application/json"))throw new IllegalArgumentException("Wrong content type");
+    if(!parseContentType(request).equals("application/json"))return null;
     JSONObject jsonObject;
     String[] httpParts = request.split("\n\n");
     if (httpParts.length<1)return null;

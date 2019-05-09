@@ -5,7 +5,7 @@ import org.toggle.toggleio.server.HttpResponse;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TelldusScriptsTest {
+class MTelldusScriptsTest {
 
     @Test
     void on() {

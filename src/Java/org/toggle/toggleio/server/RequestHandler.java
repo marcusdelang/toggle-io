@@ -1,12 +1,15 @@
 package org.toggle.toggleio.server;
 
+import net.jstick.api.Device;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.simple.JSONArray;
 import org.json.simple.parser.ParseException;
-import org.toggle.toggleio.application.controller.OutletController;
-import org.toggle.toggleio.core.JsonFile;
+import org.toggle.toggleio.application.controller.Controller;
+import org.toggle.toggleio.application.integration.JsonFile;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 
 /**
@@ -14,6 +17,10 @@ import java.io.IOException;
  */
 public class RequestHandler {
     final private static String CONFIG_FILE = "confg.json";
+    Controller controller;
+    public RequestHandler(Controller controller){
+        this.controller = controller;
+    }
 
     /**
      * Parses a request meant for telldus-io and returns a response on the connection from a given socket.
@@ -21,14 +28,29 @@ public class RequestHandler {
      * @param request A http request
      * @return String HTTP response based on request received
      */
-    public static String handleRequest(String request) throws IOException,ParseException, JSONException {
-        org.json.simple.JSONObject jsonConfig = JsonFile.read(CONFIG_FILE);
-
-        JSONObject JSONRequest = HttpParse.parseJSON(request);
-        String token = (String) JSONRequest.get("token");
-        int id = (int) jsonConfig.get(token);
-        String endpoint;
+    public String handleRequest(String request) throws IOException, JSONException {
         String response = HttpResponse.httpBadRequest();
+        if(!HttpParse.parseContentType(request).equals("application/json")){
+            return response;
+        }
+        org.json.simple.JSONObject jsonConfig = controller.readJSON(CONFIG_FILE);
+        JSONObject JSONInRequest = HttpParse.parseJSON(request);
+        org.json.simple.JSONObject sad = new org.json.simple.JSONObject();
+
+        String token = (String) JSONInRequest.get("token");
+        int id=0;
+        JSONArray devices = (JSONArray) jsonConfig.get("devices");
+        org.json.simple.JSONObject iteratorJSON;
+        Iterator<org.json.simple.JSONObject> iterator = devices.iterator();
+        while (iterator.hasNext()) {
+            iteratorJSON = iterator.next();
+            if (iteratorJSON.containsValue(token)){
+                id = (int)iteratorJSON.get("id");
+                break;
+            }
+        }
+
+        String endpoint;
         try {
             endpoint = HttpParse.parseUrlEndpoint(request);
         } catch (IllegalArgumentException iae) {
@@ -37,14 +59,14 @@ public class RequestHandler {
         System.out.println("Endpoint: " + endpoint + "\n");
 
         if (endpoint.equals("/on")) {
-            if (OutletController.on(id)) response = HttpResponse.httpOk();
+            if (controller.on(id)) response = HttpResponse.httpOk();
             else response = HttpResponse.httpInternalServerError();
 
         } else if (endpoint.equals("/off")) {
-            if (OutletController.off(id)) response = HttpResponse.httpOk();
+            if (controller.off(id)) response = HttpResponse.httpOk();
             else response = HttpResponse.httpInternalServerError();
         } else if (endpoint.equals("/status")) {
-            response = HttpResponse.httpOk(OutletController.status(id));
+            response = HttpResponse.httpOk(controller.status(id));
         } else return response;
 
         return response;

@@ -11,6 +11,7 @@ import net.jstick.api.Tellstick;
 import org.json.simple.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.simple.parser.ParseException;
+import org.toggle.toggleio.application.integration.JsonFile;
 
 /**
  * This class is responsible for register the ip on the API or update the IP on the API with help of the token received.

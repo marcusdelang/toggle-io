@@ -1,4 +1,4 @@
-package org.toggle.toggleio.core;
+package org.toggle.toggleio.application.integration;
 
 
 import org.json.simple.JSONObject;
@@ -25,9 +25,7 @@ public class JsonFile {
             return (JSONObject) obj;
         } catch (FileNotFoundException e) {
             return null;
-        } catch (IOException e) {
-            throw e;
-        } catch (ParseException e) {
+        } catch (IOException | ParseException e) {
             throw e;
         }
 

@@ -26,8 +26,7 @@ public class TellstickCore {
             }
             jsonObject.put("status_power", "UNKNOWN");
             return jsonObject;
-        }
-        catch (JSONException jsonE){
+        } catch (JSONException jsonE) {
             throw new JSONException("Something went wrong with tellstick.getLastCmd");
         }
     }
