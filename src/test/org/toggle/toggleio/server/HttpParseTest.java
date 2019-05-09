@@ -15,9 +15,9 @@ class HttpParseTest {
             "Content-Type: application/json\n" +
             "Content-Length: 49\n" +
             "\n" +
-            "{\n" +
-            "    \"deviceID\": \"2\",\n" +
-            "    \"operation\": \"1\",\n" +
+            "{" +
+            "\"deviceID\":\"2\"," +
+            "\"operation\":\"1\"" +
             "}";
     final String expected = "/toggle";
     final String actual = HttpParse.parseUrlEndpoint(input);
@@ -39,13 +39,29 @@ class HttpParseTest {
             "Content-Type: application/json\n" +
             "Content-Length: 49\n" +
             "\n" +
-            "{\n" +
-            "    \"deviceID\": \"2\",\n" +
-            "    \"operation\": \"1\",\n" +
+            "{" +
+            "    \"deviceID\": \"2\"," +
+            "    \"operation\": \"1\"" +
             "}";
     final String expected = "application/json";
     final String actual = HttpParse.parseContentType(input);
     assertEquals(actual,expected);
+  }
+  @Test
+  void parseContentTypeIncorrectInput() {
+    final String input =
+            "POT /toggle HTP/1.1\n" +
+                    "Host: www.example.com\n" +
+                    "Content-Type: application/json\n" +
+                    "Content-Length: 49\n" +
+                    "\n" +
+                    "{\n" +
+                    "    \"deviceID\": \"2\"," +
+                    "    \"operation\": \"1\"" +
+                    "}";
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      HttpParse.parseContentType(input);
+    });
   }
   @Test
   void parseContentTypeEmptyInputException() {

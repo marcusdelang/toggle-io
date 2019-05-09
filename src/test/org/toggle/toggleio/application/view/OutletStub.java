@@ -1,23 +1,21 @@
-package org.toggle.toggleio.server;
+package org.toggle.toggleio.application.view;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.toggle.toggleio.application.controller.OutletController;
+import org.toggle.toggleio.application.controller.OutletControllerStub;
 import org.toggle.toggleio.application.model.TellstickCore;
+import org.toggle.toggleio.application.model.TellstickCoreStub;
 import org.toggle.toggleio.application.view.Outlet;
 
 public class OutletStub extends Outlet {
   private JSONObject status;
 
-  public OutletStub(OutletController controller) throws JSONException {
-      super(new OutletController(new TellstickCore()));
-    this.status = new JSONObject();
-    try {
-      status.put("status_power", "off");
-    }catch (Exception e){
-      throw e;
-    }
+  public OutletStub() throws JSONException, Exception{
+    super(new OutletControllerStub());
 
+    this.status = new JSONObject();
+      status.put("status_power", "off");
   }
 
   @Override

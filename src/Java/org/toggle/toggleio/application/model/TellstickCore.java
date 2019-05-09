@@ -17,10 +17,10 @@ public class TellstickCore {
   private JSONObject status;
   private Tellstick ts;
 
-  public TellstickCore(){
+  public TellstickCore()throws Exception{
     status = new JSONObject();
     ts = new Tellstick(false);
-    this.off();
+    status.put("status_power", "unknown");
   }
   public JSONObject getStatus() {
     return status;

@@ -31,11 +31,12 @@ public class RequestHandler {
 
     if (endpoint.equals("/on")) {
       if (outlet.on()) response = HttpResponse.httpOk();
-      else return response;
+      else response = HttpResponse.httpInternalServerError();
+
     }
     else if (endpoint.equals("/off")) {
       if(outlet.off()) response = HttpResponse.httpOk();
-      else return response;
+      else response = HttpResponse.httpInternalServerError();
     }
     else if (endpoint.equals("/status")){
       JSONResponse = outlet.getStatus();

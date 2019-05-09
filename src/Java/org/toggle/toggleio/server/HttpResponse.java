@@ -35,4 +35,8 @@ public class HttpResponse {
     String badRequestResponse = "HTTP/1.1 400 Bad Request" + "\n\r\n";
     return badRequestResponse;
   }
+  public static String httpInternalServerError(){
+    String internalServerError = "HTTP/1.1 500 Internal Server Error" + "\n\r\n";
+    return internalServerError;
+  }
 }

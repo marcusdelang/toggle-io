@@ -1,6 +1,7 @@
 package org.toggle.toggleio.server;
 
 import org.json.HTTP;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -47,6 +48,22 @@ public class HttpParse {
 
     return contentType;
   }
+  public static JSONObject parseJSON(String request) throws IllegalArgumentException{
+    if (!validHTTP(request)) {
+      throw new IllegalArgumentException("Not a valid HTTP request");
+    }
+    if(!parseContentType(request).equals("application/json"))throw new IllegalArgumentException("Wrong content type");
+    JSONObject jsonObject;
+    String[] httpParts = request.split("\n\n");
+    if (httpParts.length<1)return null;
+    try {
+      jsonObject = new JSONObject(httpParts[1]);
+    }catch (Exception e){
+      throw new IllegalArgumentException();
+    }
+
+    return jsonObject;
+  }
 
   /**
    * Checks if a HTTP request have valid amount of fields, it does not check the content
@@ -59,7 +76,15 @@ public class HttpParse {
       return false;
     }
     String[] httpParts = httpString.split("\n\n");
-    if (httpParts.length > 2 || httpParts.length < 1) {
+
+    if(httpParts.length>1){try {
+      new JSONObject(httpParts[1]);
+    }catch (JSONException jsonE) {
+      jsonE.printStackTrace();
+      return false;
+    }
+  }
+    if (httpParts.length > 2 || httpParts.length == 0) {
       return false;
     }
     httpParts = httpParts[0].split("\n");
@@ -67,6 +92,7 @@ public class HttpParse {
     if (!(httpParts.length == 3)) {
       return false;
     }
+    if(!(httpParts[0].equals("POST")&&httpParts[2].equals("HTTP/1.1")))return false;
 
     return true;
   }
