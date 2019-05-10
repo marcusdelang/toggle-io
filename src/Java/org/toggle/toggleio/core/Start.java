@@ -33,6 +33,7 @@ public class Start {
     private static void runtime(String[] args, Controller controller) {
         Tellstick tellstick = new Tellstick();
         ToggleServer toggleServer = new ToggleServer(new RequestHandler(controller));
+        ToggleIoDevice toggleIoDevice = new ToggleIoDevice(controller);
 
         menuRefresh(tellstick, toggleServer);
         while (true) {
@@ -49,8 +50,10 @@ public class Start {
                     }
                     break;
                 case "2":
+                    toggleIoDevice.addDevice();
                     break;
                 case "3":
+                    toggleIoDevice.removeDevice();
                     break;
                 case "4":
                     return;
@@ -67,8 +70,12 @@ public class Start {
 
         for (int i = 0; i < deviceList.size(); i++) {
             Device device = deviceList.get(i);
-            System.out.println(device.getId());
-            System.out.println(device.getLastCmd());
+            System.out.println("ID: "+ device.getId());
+            System.out.println("Name: "+device.getName());
+            System.out.println("Proto: "+device.getProto());
+            System.out.println("Type: "+device.getType());
+            System.out.println("Model: "+device.getModel());
+            System.out.println("Cmd: "+device.getLastCmd());
             System.out.println();
         }
         if (toggleServer.isClosed() == true) System.out.println("1. Start Listening");

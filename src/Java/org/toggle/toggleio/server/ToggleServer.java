@@ -105,11 +105,11 @@ public class ToggleServer implements Runnable{
         } catch (SocketException se) {
             this.closed=true;
             this.exit = false;
-            System.out.println("Could not close connection " + se);
+            System.out.println(se);
         } catch (IOException ioe) {
             this.closed=true;
             this.exit=false;
-            System.out.println("Something went wrong with writing or reading output " + ioe);
+            System.out.println(ioe);
         }
     }
 
