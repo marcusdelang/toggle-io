@@ -18,11 +18,14 @@ public class ToggleIoDevice {
        // Scanner myObj = new Scanner(System.in);  // Create a Scanner object
        // String input = myObj.nextLine();
         Tellstick tellstick = new Tellstick(true);
+        tellstick.init();
         DeviceConfig deviceConfig = new DeviceConfig();
         deviceConfig.setId(10);
         deviceConfig.setName("fishybowl");
         deviceConfig.setProtocol("arctech");
         deviceConfig.setModel("selflearning-switch");
+        deviceConfig.setParam("house","953934");
+        deviceConfig.setParam("unit","10");
         System.out.println(tellstick.addDevice(deviceConfig));
         tellstick.close();
 
