@@ -16,9 +16,10 @@ import java.util.Iterator;
  * This class contains functions for handling a HTTP request that is meant for a telldus service
  */
 public class RequestHandler {
-    final private static String CONFIG_FILE = "confg.json";
+    final private static String DEVICE_FILE = "devices.json";
     Controller controller;
-    public RequestHandler(Controller controller){
+
+    public RequestHandler(Controller controller) {
         this.controller = controller;
     }
 
@@ -32,25 +33,24 @@ public class RequestHandler {
         String response = HttpResponse.httpBadRequest();
 
         try {
-            if(!HttpParse.parseContentType(request).equals("application/json")){
+            if (!HttpParse.parseContentType(request).equals("application/json")) {
                 return response;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             return response;
         }
-        org.json.simple.JSONObject jsonConfig = controller.readJSON(CONFIG_FILE);
+        org.json.simple.JSONObject jsonConfig = controller.readJSON(DEVICE_FILE);
         JSONObject JSONInRequest = HttpParse.parseJSON(request);
-        org.json.simple.JSONObject sad = new org.json.simple.JSONObject();
 
         String token = (String) JSONInRequest.get("token");
-        int id=0;
+        int id = 0;
         JSONArray devices = (JSONArray) jsonConfig.get("devices");
         org.json.simple.JSONObject iteratorJSON;
         Iterator<org.json.simple.JSONObject> iterator = devices.iterator();
         while (iterator.hasNext()) {
             iteratorJSON = iterator.next();
-            if (iteratorJSON.containsValue(token)){
-                id = (int)iteratorJSON.get("id");
+            if (iteratorJSON.containsValue(token)) {
+                id = (int) iteratorJSON.get("id");
                 break;
             }
         }

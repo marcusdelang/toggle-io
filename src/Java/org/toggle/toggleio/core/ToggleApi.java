@@ -21,8 +21,7 @@ public class ToggleApi {
 
   final private static int DEFAULT_TOKEN_LENGTH = 256;
   final private static String CONFIG_FILE = "confg.json";
-  //For Testing Purposes
-
+  final private static String DEVICE_FILE = "devices.json";
 
   /**
    * This function will request a new slot on the API or

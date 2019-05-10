@@ -17,57 +17,51 @@ import java.net.SocketTimeoutException;
  * Class that contains a server that listens on a port using the SOCKET library.
  * It will hand over all HTTP requests to the Telldus RequestHandler
  */
-public class ToggleServer {
+public class ToggleServer implements Runnable{
     private RequestHandler requestHandler;
-
+    private int port;
+    private volatile boolean exit;
+    private volatile boolean closed;
+    ServerSocket welcomeSocket;
+    public ToggleServer(RequestHandler requestHandler, int port) {
+        this.requestHandler = requestHandler;
+        this.exit=false;
+        this.port = port;
+        this.closed = true;
+    }
     public ToggleServer(RequestHandler requestHandler) {
         this.requestHandler = requestHandler;
+        this.exit=false;
+        this.port = 8080;
+        this.closed = true;
     }
-
-    /**
-     * Starts a toggle-io server on port 80 as default
-     *
-     * @throws PortUnreachableException if socket cant be opened on port 80
-     */
-    public void start() throws PortUnreachableException {
+    @Override
+    public void run() {
         int port = 8080;
-        try {
-            runtime(port);
-        } catch (PortUnreachableException pue) {
-            throw new PortUnreachableException("Could not open Socket on port " + port);
-        }
+            runtime(this.port);
+
     }
 
-    /**
-     * Starts a toggle-io server on the port received
-     *
-     * @param port port to start server on
-     * @throws PortUnreachableException if socket cant be opened on port provided
-     */
-    public void start(int port) throws PortUnreachableException {
-        try {
-            runtime(port);
-        } catch (PortUnreachableException pue) {
-            throw new PortUnreachableException("Could not open Socket on port" + port);
-        }
-    }
-
-    private void runtime(int port) throws PortUnreachableException {
+    private void runtime(int port) {
         String clientSentence;
-        ServerSocket welcomeSocket;
         String clientLines = null;
         String response = null;
+
+
 
         try {
             welcomeSocket = new ServerSocket(port);
         } catch (Exception ex) {
-            throw new PortUnreachableException("Could not open socket on port " + port);
+            System.out.println("Could not open socket on port " + port);
+            return;
         }
         System.out.println("Server is running on port " + port);
         try {
-            while (true) {
-
+            while (!exit) {
+                this.closed = false;
+                System.out.println("Running on air");
                 Socket connectionSocket = welcomeSocket.accept();
+
                 try {
                     connectionSocket.setSoTimeout(5000);
                     System.out.println("Received request from " + connectionSocket);
@@ -109,9 +103,34 @@ public class ToggleServer {
                 }
             }
         } catch (SocketException se) {
+            this.closed=true;
+            this.exit = false;
             System.out.println("Could not close connection " + se);
         } catch (IOException ioe) {
+            this.closed=true;
+            this.exit=false;
             System.out.println("Something went wrong with writing or reading output " + ioe);
+        }
+    }
+
+    public void setExit(boolean exit) {
+        this.exit = exit;
+    }
+    public void setPort(int port){
+        this.port = port;
+    }
+    public boolean exiting(){
+        return this.exit;
+    }
+    public boolean isClosed() {
+        return closed;
+    }
+    public void closeSocket(){
+
+        try {
+            welcomeSocket.close();
+        }catch (IOException io){
+            io.printStackTrace();
         }
     }
 }

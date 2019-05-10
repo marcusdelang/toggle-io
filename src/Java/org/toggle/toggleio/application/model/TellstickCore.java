@@ -20,7 +20,7 @@ public class TellstickCore {
             if (System.getProperty("os.name").equals("Linux")) {
                 Tellstick tellstick = new Tellstick();
 
-                jsonObject.put("status_power", tellstick.getLastCmd(id));
+                jsonObject.put("status_power", tellstick.getLastCmd(id).toLowerCase());
                 tellstick.close();
                 return jsonObject;
             }

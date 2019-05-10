@@ -28,7 +28,8 @@ public class Controller {
         return TellstickCore.off(id);
     }
 
-    public void writeJSON(String filename, org.json.simple.JSONObject jsonObject)throws IOException {
+    public synchronized void writeJSON(String filename, org.json.simple.JSONObject jsonObject)throws IOException {
+
         try {
             JsonFile.write(jsonObject, filename);
         }catch (IOException e){
@@ -37,7 +38,7 @@ public class Controller {
 
     }
 
-    public org.json.simple.JSONObject readJSON(String filename) throws IOException{
+    public synchronized org.json.simple.JSONObject readJSON(String filename) throws IOException{
         try {
             return JsonFile.read(filename);
         } catch (ParseException | IOException e) {

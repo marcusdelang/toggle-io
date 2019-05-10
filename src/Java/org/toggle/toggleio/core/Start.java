@@ -2,12 +2,14 @@ package org.toggle.toggleio.core;
 
 
 import java.net.PortUnreachableException;
+
 import net.jstick.api.Device;
 import net.jstick.api.Tellstick;
 import org.json.JSONException;
 import org.toggle.toggleio.application.controller.Controller;
 import org.toggle.toggleio.server.RequestHandler;
 import org.toggle.toggleio.server.ToggleServer;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -23,69 +25,82 @@ public class Start {
     // final private static String API_REGISTER_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/register";
     // final private static String API_UPDATE_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/update";
     public static void main(String[] args) throws JSONException, Exception {
+        Controller controller = new Controller();
+        runtime(args, controller);
 
-        runtime();
-    /*try {
-      ToggleApi.requestSlot(API_REGISTER_URL, API_UPDATE_URL);
-    }catch (IOException ex){
-      System.out.println("Start: " + ex);
-      return;
-    }catch (ParseException pe){
-      System.out.println("Something is wrong with JSON file");
-      return;
-    }*/
-        ToggleServer toggleServer = new ToggleServer(new RequestHandler(new Controller()));
+    }
 
+    private static void runtime(String[] args, Controller controller) {
+        Tellstick tellstick = new Tellstick();
+        ToggleServer toggleServer = new ToggleServer(new RequestHandler(controller));
+
+        menuRefresh(tellstick, toggleServer);
+        while (true) {
+
+            Scanner myObj = new Scanner(System.in);  // Create a Scanner object
+            String input = myObj.nextLine();
+            switch (input) {
+                case "1":
+                    if (toggleServer.isClosed() == true) {
+                        runNewServer(args, controller, toggleServer);
+
+                    } else if(!toggleServer.isClosed()&&!toggleServer.exiting()){
+                        closeServer(toggleServer);
+                    }
+                    break;
+                case "2":
+                    break;
+                case "3":
+                    break;
+                case "4":
+                    return;
+            }
+            menuRefresh(tellstick, toggleServer);
+        }
+
+    }
+
+    private static void menuRefresh(Tellstick tellstick, ToggleServer toggleServer) {
+        ArrayList<Device> deviceList = tellstick.getDevices();
+        System.out.flush();
+        System.out.println("TOGGLE-IO");
+
+        for (int i = 0; i < deviceList.size(); i++) {
+            Device device = deviceList.get(i);
+            System.out.println(device.getId());
+            System.out.println(device.getLastCmd());
+            System.out.println();
+        }
+        if (toggleServer.isClosed() == true) System.out.println("1. Start Listening");
+        else if(toggleServer.exiting())System.out.println("Closing server please wait");
+        else if (toggleServer.isClosed() == false) System.out.println("1. Stop Listening");
+        System.out.println("2. Add device");
+        System.out.println("3. Remove device");
+        System.out.println("4, Exit program");
+        tellstick.close();
+    }
+
+    private static void closeServer(ToggleServer toggleServer) {
+        toggleServer.setExit(true);
+        toggleServer.closeSocket();
+    }
+
+    private static void runNewServer(String[] args, Controller controller, ToggleServer toggleServer) {
+        Thread serverThread = new Thread(toggleServer, "T1");
         if (args.length > 0) {
             try {
-                toggleServer.start(Integer.parseInt(args[0]));
+                toggleServer.setExit(false);
+                toggleServer.setPort(Integer.parseInt(args[0]));
+                serverThread.start();
+                System.out.println("Running thread");
             } catch (NumberFormatException e) {
                 System.out.println("Usage: Start 'port'");
-                return;
-            } catch (PortUnreachableException pue) {
-                System.out.println("Port " + args[0] + " unreachable, try again later!");
             } catch (Exception e) {
                 throw e;
             }
 
         } else {
-            try {
-                toggleServer.start();
-            } catch (PortUnreachableException pue) {
-                System.out.println("Port 80 unreachable, try again later!");
-            }
+            serverThread.start();
         }
-    }
-
-    private static void runtime() {
-        Tellstick tellstick = new Tellstick();
-        ArrayList<Device> devicelist = tellstick.getDevices();
-        System.out.flush();
-        System.out.println("TOGGLE-IO");
-        for (int i = 0; i < devicelist.size(); i++) {
-            Device device = devicelist.get(i);
-            System.out.println(device.getId());
-
-
-            System.out.println(device.getLastCmd());
-            System.out.println();
-        }
-        tellstick.close();
-        System.out.println("1. Start listening");
-        System.out.println("2. Add device");
-        System.out.println("3. Remove device");
-        Scanner myObj = new Scanner(System.in);  // Create a Scanner object
-        String input = myObj.nextLine();
-        switch (input) {
-            case "1":
-                break;
-            case "2":
-                break;
-            case "3":
-                break;
-            case "4":
-                break;
-        }
-
     }
 }
