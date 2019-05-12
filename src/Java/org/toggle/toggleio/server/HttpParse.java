@@ -38,7 +38,7 @@ public class HttpParse {
     if (!validHTTP(request)) {
       throw new IllegalArgumentException("Not a valid HTTP request");
     }
-    String[] httpParts = request.split("\n\r\n");
+    String[] httpParts = request.split("\n\n");
     try {
       JSONObject JSONrequest = HTTP.toJSONObject(httpParts[0]);
       contentType = JSONrequest.getString("Content-Type");
@@ -54,8 +54,8 @@ public class HttpParse {
     }
     if(!parseContentType(request).equals("application/json"))return null;
     JSONObject jsonObject;
-    String[] httpParts = request.split("\n\r\n");
-    if (httpParts.length<1)return null;
+    String[] httpParts = request.split("\n\n");
+    if (httpParts.length<=1)return null;
     try {
       jsonObject = new JSONObject(httpParts[1]);
     }catch (Exception e){
@@ -75,12 +75,11 @@ public class HttpParse {
     if (httpString.length() < 1) {
       return false;
     }
-    String[] httpParts = httpString.split("\n\r\n");
+    String[] httpParts = httpString.split("\n\n");
 
     if(httpParts.length>1){try {
       new JSONObject(httpParts[1]);
     }catch (JSONException jsonE) {
-      jsonE.printStackTrace();
       return false;
     }
   }

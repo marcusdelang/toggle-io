@@ -1,6 +1,7 @@
 package org.toggle.toggleio.server;
 
 import net.jstick.api.Device;
+import net.jstick.api.Tellstick;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.simple.JSONArray;
@@ -9,6 +10,7 @@ import org.toggle.toggleio.application.controller.Controller;
 import org.toggle.toggleio.application.integration.JsonFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 
@@ -29,31 +31,41 @@ public class RequestHandler {
      * @param request A http request
      * @return String HTTP response based on request received
      */
-    public String handleRequest(String request) throws IOException, JSONException {
+    public String handleRequest(String request) throws JSONException {
         String response = HttpResponse.httpBadRequest();
-
+        String token;
         try {
             if (!HttpParse.parseContentType(request).equals("application/json")) {
                 return response;
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return response;
         }
-        org.json.simple.JSONObject jsonConfig = controller.readJSON(DEVICE_FILE);
-        JSONObject JSONInRequest = HttpParse.parseJSON(request);
 
-        String token = (String) JSONInRequest.get("token");
+        JSONObject JSONInRequest = HttpParse.parseJSON(request);
+        if(JSONInRequest==null)return response;
+        try {
+            token = (String)JSONInRequest.get("token");
+        }catch (JSONException s){
+            return response;
+        }
+
+
         int id = 0;
-        JSONArray devices = (JSONArray) jsonConfig.get("devices");
-        org.json.simple.JSONObject iteratorJSON;
-        Iterator<org.json.simple.JSONObject> iterator = devices.iterator();
-        while (iterator.hasNext()) {
-            iteratorJSON = iterator.next();
-            if (iteratorJSON.containsValue(token)) {
-                id = (int) iteratorJSON.get("id");
-                break;
+        boolean deviceExist = false;
+        Tellstick tellstick = new Tellstick();
+
+        ArrayList<Device> devices = tellstick.getDevices();
+        for (int i = 0; i < devices.size(); i++) {
+            Device device = devices.get(i);
+            if(tellstick.getDeviceParameter(device.getId(),"code", "0").equals(token)){
+                id = device.getId();
+                deviceExist = true;
             }
         }
+        if(!deviceExist)return HttpResponse.httpBadRequest();
+
 
         String endpoint;
         try {
@@ -61,7 +73,6 @@ public class RequestHandler {
         } catch (IllegalArgumentException iae) {
             return response;
         }
-        System.out.println("Endpoint: " + endpoint + "\n");
 
         if (endpoint.equals("/on")) {
             if (controller.on(id)) response = HttpResponse.httpOk();

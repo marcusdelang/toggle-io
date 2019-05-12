@@ -59,12 +59,10 @@ public class ToggleServer implements Runnable{
         try {
             while (!exit) {
                 this.closed = false;
-                System.out.println("Running on air");
                 Socket connectionSocket = welcomeSocket.accept();
 
                 try {
                     connectionSocket.setSoTimeout(5000);
-                    System.out.println("Received request from " + connectionSocket);
                     BufferedReader fromClient =
                             new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
                     DataOutputStream outToClient =
@@ -72,13 +70,19 @@ public class ToggleServer implements Runnable{
                     StringBuilder sentenceBuilder = new StringBuilder();
                     while ((clientLines = fromClient.readLine()) != null) {
                         if (clientLines.isEmpty()) {
-                            break;
+                           break;
                         }
                         sentenceBuilder.append(clientLines + "\n");
                     }
                     if (sentenceBuilder.length() > 0) {
                         sentenceBuilder.setLength(sentenceBuilder.length() - 1);
                     }
+                    StringBuilder payload = new StringBuilder();
+                    while(fromClient.ready()){
+                        payload.append((char) fromClient.read());
+                    }
+                    if(payload.length()>0)sentenceBuilder.append("\n\n");
+                    sentenceBuilder.append(payload.toString());
                     clientSentence = sentenceBuilder.toString();
 
                     try {

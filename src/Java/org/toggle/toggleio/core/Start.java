@@ -1,15 +1,15 @@
 package org.toggle.toggleio.core;
 
 
-import java.net.PortUnreachableException;
-
 import net.jstick.api.Device;
 import net.jstick.api.Tellstick;
 import org.json.JSONException;
+import org.json.simple.parser.ParseException;
 import org.toggle.toggleio.application.controller.Controller;
 import org.toggle.toggleio.server.RequestHandler;
 import org.toggle.toggleio.server.ToggleServer;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -18,12 +18,12 @@ import java.util.Scanner;
  */
 public class Start {
 
-    final private static String API_REGISTER_URL = "http://130.229.151.183/api/device/register";
-    final private static String API_UPDATE_URL = "http://130.229.151.183/api/device/update";
+   // final private static String API_REGISTER_URL = "http://130.229.151.183/api/device/register";
+    //final private static String API_UPDATE_URL = "http://130.229.151.183/api/device/update";
 
 
-    // final private static String API_REGISTER_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/register";
-    // final private static String API_UPDATE_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/update";
+    final private static String API_REGISTER_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/register";
+    final private static String API_UPDATE_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/update";
     public static void main(String[] args) throws JSONException, Exception {
         Controller controller = new Controller();
         runtime(args, controller);
@@ -38,14 +38,19 @@ public class Start {
         menuRefresh(tellstick, toggleServer);
         while (true) {
 
-            Scanner myObj = new Scanner(System.in);  // Create a Scanner object
-            String input = myObj.nextLine();
+            Scanner scanner = new Scanner(System.in);  // Create a Scanner object
+            String input = scanner.nextLine();
             switch (input) {
                 case "1":
                     if (toggleServer.isClosed() == true) {
-                        runNewServer(args, controller, toggleServer);
+                        try {
+                            ToggleApi.requestSlot(API_REGISTER_URL, API_UPDATE_URL);
+                            runNewServer(args, controller, toggleServer);
+                        } catch (IOException ex) {
+                            System.out.println("Could not register your device/s");
+                        }
 
-                    } else if(!toggleServer.isClosed()&&!toggleServer.exiting()){
+                    } else if (!toggleServer.isClosed() && !toggleServer.exiting()) {
                         closeServer(toggleServer);
                     }
                     break;
@@ -56,6 +61,8 @@ public class Start {
                     toggleIoDevice.removeDevice();
                     break;
                 case "4":
+                    tellstick.close();
+                    if(!toggleServer.isClosed())closeServer(toggleServer);
                     return;
             }
             menuRefresh(tellstick, toggleServer);
@@ -64,29 +71,29 @@ public class Start {
     }
 
     private static void menuRefresh(Tellstick tellstick, ToggleServer toggleServer) {
-        ArrayList<Device> deviceList = tellstick.getDevices();
+
         System.out.flush();
         System.out.println("TOGGLE-IO");
-
-        for (int i = 0; i < deviceList.size(); i++) {
-            Device device = deviceList.get(i);
-            System.out.println("ID: "+ device.getId());
-            System.out.println("Name: "+device.getName());
-            System.out.println("Proto: "+device.getProto());
-            System.out.println("Type: "+device.getType());
-            System.out.println("Model: "+device.getModel());
-            System.out.println("Cmd: "+device.getLastCmd());
-            System.out.println();
-        }
+        printDevices(tellstick);
         if (toggleServer.isClosed() == true) System.out.println("1. Start Listening");
-        else if(toggleServer.exiting())System.out.println("Closing server please wait");
+        else if (toggleServer.exiting()) System.out.println("Closing server please wait");
         else if (toggleServer.isClosed() == false) System.out.println("1. Stop Listening");
         System.out.println("2. Add device");
         System.out.println("3. Remove device");
         System.out.println("4, Exit program");
         tellstick.close();
     }
-
+    private static void printDevices(Tellstick tellstick)
+    {
+        ArrayList<Device> deviceList = tellstick.getDevices();
+        for (int i = 0; i < deviceList.size(); i++) {
+            Device device = deviceList.get(i);
+            System.out.println("Name: " + device.getName());
+            System.out.println("ID: " + device.getId());
+            System.out.println("Token: " + tellstick.getDeviceParameter(device.getId(),"code", "0"));
+            System.out.println();
+        }
+    }
     private static void closeServer(ToggleServer toggleServer) {
         toggleServer.setExit(true);
         toggleServer.closeSocket();
