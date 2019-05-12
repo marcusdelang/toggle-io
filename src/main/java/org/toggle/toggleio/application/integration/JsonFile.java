@@ -4,6 +4,7 @@ package org.toggle.toggleio.application.integration;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import com.google.gson.*;
 
 
 import java.io.*;
@@ -12,6 +13,7 @@ import java.io.*;
  * This class handles writing and reading a file of type .json
  */
 public class JsonFile {
+
     /**
      * Returns a json of type JSONObject if a file exist and contains correctly formated json
      * @param filename of file that should be read from

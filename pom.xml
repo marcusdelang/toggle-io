@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>com.toggle.toggle-io</groupId>
     <artifactId>toggle-io</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -11,17 +11,37 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
     <build>
-        <sourceDirectory>src/Java</sourceDirectory>
-        <testSourceDirectory>src/test</testSourceDirectory>
+        <plugins>
+            <plugin>
+                <!-- Build an executable JAR -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>
+                            jar-with-dependencies
+                        </descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.toggle.toggleio.core.Start</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
     <dependencies>
-        <dependency>
-            <groupId>jstick</groupId>
-            <artifactId>jstickapi</artifactId>
-            <scope>system</scope>
-            <version>1.7</version>
-            <systemPath>${basedir}/libs/jstick-api-1.7.jar</systemPath>
-        </dependency>
         <dependency>
             <groupId>org.mock-server</groupId>
             <artifactId>mockserver-maven-plugin</artifactId>
@@ -67,6 +87,16 @@
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20180813</version>
+        </dependency>
+        <dependency>
+            <groupId>net.jstick.api</groupId>
+            <artifactId>jstick</artifactId>
+            <version>1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.5</version>
         </dependency>
     </dependencies>
 

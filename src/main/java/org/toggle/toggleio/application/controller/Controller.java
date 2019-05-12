@@ -10,6 +10,7 @@ import java.io.IOException;
 
 
 public class Controller {
+
     /**
      * Returns device status depending on type of device
      *
@@ -41,7 +42,7 @@ public class Controller {
     public synchronized org.json.simple.JSONObject readJSON(String filename) throws IOException{
         try {
             return JsonFile.read(filename);
-        } catch (ParseException | IOException e) {
+        } catch (ParseException| IOException e) {
           throw new IOException("Could not read the file");
         }
     }

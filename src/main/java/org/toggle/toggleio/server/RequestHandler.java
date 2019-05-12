@@ -4,14 +4,10 @@ import net.jstick.api.Device;
 import net.jstick.api.Tellstick;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.simple.JSONArray;
-import org.json.simple.parser.ParseException;
 import org.toggle.toggleio.application.controller.Controller;
-import org.toggle.toggleio.application.integration.JsonFile;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
+
 
 
 /**

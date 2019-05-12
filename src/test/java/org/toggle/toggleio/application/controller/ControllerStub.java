@@ -4,8 +4,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.simple.JSONArray;
 
-import java.io.IOException;
-
 public class ControllerStub extends Controller {
 
     public ControllerStub(){

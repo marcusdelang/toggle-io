@@ -3,8 +3,6 @@ package org.toggle.toggleio.core;
 
 import net.jstick.api.Device;
 import net.jstick.api.Tellstick;
-import org.json.JSONException;
-import org.json.simple.parser.ParseException;
 import org.toggle.toggleio.application.controller.Controller;
 import org.toggle.toggleio.server.RequestHandler;
 import org.toggle.toggleio.server.ToggleServer;
@@ -24,7 +22,7 @@ public class Start {
 
     final private static String API_REGISTER_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/register";
     final private static String API_UPDATE_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/update";
-    public static void main(String[] args) throws JSONException, Exception {
+    public static void main(String[] args){
         Controller controller = new Controller();
         runtime(args, controller);
 
@@ -55,10 +53,15 @@ public class Start {
                     }
                     break;
                 case "2":
-                    toggleIoDevice.addDevice();
+                    if (toggleServer.isClosed()) toggleIoDevice.addDevice();
+                    else {
+                        tellstick.close();
+                        if(!toggleServer.isClosed())closeServer(toggleServer);
+                        return;
+                    }
                     break;
                 case "3":
-                    toggleIoDevice.removeDevice();
+                    if(toggleServer.isClosed())toggleIoDevice.removeDevice();
                     break;
                 case "4":
                     tellstick.close();
@@ -72,15 +75,19 @@ public class Start {
 
     private static void menuRefresh(Tellstick tellstick, ToggleServer toggleServer) {
 
+        final String ANSI_CLS = "\u001b[2J";
+        final String ANSI_HOME = "\u001b[H";
+        System.out.print(ANSI_CLS + ANSI_HOME);
         System.out.flush();
         System.out.println("TOGGLE-IO");
         printDevices(tellstick);
         if (toggleServer.isClosed() == true) System.out.println("1. Start Listening");
         else if (toggleServer.exiting()) System.out.println("Closing server please wait");
         else if (toggleServer.isClosed() == false) System.out.println("1. Stop Listening");
-        System.out.println("2. Add device");
-        System.out.println("3. Remove device");
-        System.out.println("4, Exit program");
+        if (toggleServer.isClosed())System.out.println("2. Add device");
+        if (toggleServer.isClosed())System.out.println("3. Remove device");
+        if (toggleServer.isClosed())System.out.println("4. Exit program");
+        else System.out.println("2. Exit Program");
         tellstick.close();
     }
     private static void printDevices(Tellstick tellstick)
