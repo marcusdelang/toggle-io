@@ -18,7 +18,7 @@ public class MenuView {
     private ToggleServer toggleServer;
     private Tellstick tellstick;
     private ToggleIoDevice toggleIoDevice;
-   private ToggleApi toggleApi;
+    private ToggleApi toggleApi;
     final private static String API_REGISTER_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/register";
     final private static String API_UPDATE_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/update";
 
@@ -38,14 +38,10 @@ public class MenuView {
             String input = scanner.nextLine();
             switch (input) {
                 case "1":
-                    if (toggleServer.isClosed() == true) {
-                        try {
+                    if (tellstick.getNumberOfDevices()==0)break;
+                    if (toggleServer.isClosed()) {
                             toggleApi.requestSlot(API_REGISTER_URL, API_UPDATE_URL);
                             runNewServer(args);
-                        } catch (IOException ex) {
-                            System.out.println("Could not register your device/s");
-                        }
-
                     } else if (!toggleServer.isClosed() && !toggleServer.exiting()) {
                         closeServer();
                     }
@@ -82,9 +78,10 @@ public class MenuView {
         System.out.flush();
         System.out.println("TOGGLE-IO");
         printDevices();
-        if (toggleServer.isClosed() == true) System.out.println("1. Start Listening");
+        if (toggleServer.isClosed()&&tellstick.getNumberOfDevices()>0) System.out.println("1. Start Listening");
+        else if (tellstick.getNumberOfDevices()==0)System.out.println("Please add devices before starting server");
         else if (toggleServer.exiting()) System.out.println("Closing server please wait");
-        else if (toggleServer.isClosed() == false) System.out.println("1. Stop Listening");
+        else if (!toggleServer.isClosed()) System.out.println("1. Stop Listening");
         if (toggleServer.isClosed()) System.out.println("2. Add device");
         if (toggleServer.isClosed()) System.out.println("3. Remove device");
         if (toggleServer.isClosed()) System.out.println("4. Learn device");

@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class ToggleIoDevice {
 
-    Controller controller;
+    private Controller controller;
 
     ToggleIoDevice(Controller controller) {
         this.controller = controller;

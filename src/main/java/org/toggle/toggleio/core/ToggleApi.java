@@ -26,7 +26,7 @@ public class ToggleApi {
 
     final private static int DEFAULT_TOKEN_LENGTH = 256;
     final private static String CONFIG_FILE = "confg.json";
-    Controller controller;
+    private Controller controller;
 
     public ToggleApi(Controller controller){
         this.controller = controller;
@@ -36,12 +36,10 @@ public class ToggleApi {
      * This function will request a new slot on the API or
      * update the IP on the API to the current one if the TOKEN is NOT expired
      *
-     * @param registerUrl
-     * @param updateUrl
-     * @throws IOException
-     * @throws ParseException
+     * @param registerUrl toggle Register device URL
+     * @param updateUrl toggle Update device token URL
      */
-    public void requestSlot(String registerUrl, String updateUrl) throws IOException {
+    public void requestSlot(String registerUrl, String updateUrl)  {
         Tellstick tellstick = new Tellstick();
         int numberOfDevices = tellstick.getNumberOfDevices();
         if (numberOfDevices == 0) return;
@@ -86,7 +84,6 @@ public class ToggleApi {
                 while ((responseLine = br.readLine()) != null) {
                     response.append(responseLine.trim());
                 }
-                System.out.println(response.toString());
                 JSONObject jsonObject = new JSONObject(response.toString());
 
                 return (String) jsonObject.get("token");
@@ -122,17 +119,5 @@ public class ToggleApi {
             throw new ConnectException("Could not connect to API");
         }
 
-    }
-
-    private String generateString(int length) {
-        final String TOKEN_CHAR_STRING = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-
-        StringBuilder builder = new StringBuilder();
-        while (length-- != 0) {
-            int character = (int) (Math.random() * TOKEN_CHAR_STRING.length());
-            builder.append(TOKEN_CHAR_STRING.charAt(character));
-        }
-
-        return builder.toString();
     }
 }

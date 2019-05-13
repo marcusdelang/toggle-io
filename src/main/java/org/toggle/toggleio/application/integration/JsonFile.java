@@ -58,11 +58,9 @@ public class JsonFile {
         if (jsonArray == null) jsonArray = new JSONArray();
 
         JSONObject jsonObject = new JSONObject();
-        System.out.println(jsonArray.size());
         for (int i = 0; i < jsonArray.size(); i++) {
             jsonObject = (JSONObject) jsonArray.get(i);
             jsonObject = (JSONObject) jsonObject.get("device");
-            System.out.println(jsonObject.toJSONString());
             if ((long)jsonObject.get("id") == id){
                return;
             }
