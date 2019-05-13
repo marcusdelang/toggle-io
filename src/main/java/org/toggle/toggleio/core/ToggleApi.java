@@ -5,9 +5,8 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-
 import net.jstick.api.Device;
-
+import org.toggle.toggleio.application.controller.Controller;
 import net.jstick.api.Tellstick;
 
 
@@ -15,6 +14,8 @@ import org.json.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.simple.parser.ParseException;
+
+
 
 
 /**
@@ -25,6 +26,11 @@ public class ToggleApi {
 
     final private static int DEFAULT_TOKEN_LENGTH = 256;
     final private static String CONFIG_FILE = "confg.json";
+    Controller controller;
+
+    public ToggleApi(Controller controller){
+        this.controller = controller;
+    }
 
     /**
      * This function will request a new slot on the API or
@@ -35,7 +41,7 @@ public class ToggleApi {
      * @throws IOException
      * @throws ParseException
      */
-    public static void requestSlot(String registerUrl, String updateUrl) throws IOException {
+    public void requestSlot(String registerUrl, String updateUrl) throws IOException {
         Tellstick tellstick = new Tellstick();
         int numberOfDevices = tellstick.getNumberOfDevices();
         if (numberOfDevices == 0) return;
@@ -44,18 +50,18 @@ public class ToggleApi {
         register(registerUrl, updateUrl, tellstick);
     }
 
-    private static void register(String registerUrl, String updateUrl, Tellstick tellstick) {
+    private void register(String registerUrl, String updateUrl, Tellstick tellstick) {
         String token;
         ArrayList<Device> deviceList = tellstick.getDevices();
         for (int i = 0; i < deviceList.size(); i++) {
             Device device = deviceList.get(i);
-            token = tellstick.getDeviceParameter(device.getId(),"code", "0");
+            token = controller.getToken(device.getId());
             System.out.print("Name: " + device.getName() + ", ");
             try {
                 if (token.length() == 0) throw new IOException();
                 if (token.equals("0")) token = sendRequestRegister(registerUrl);
                 else token = sendRequestUpdate(updateUrl,registerUrl, device);
-                tellstick.setDeviceParameter(device.getId(), "code", token);
+                controller.setToken(device.getId(), token);
                 System.out.print("Token: " + token+"\n\n");
             } catch (IOException|JSONException io) {
                 System.out.print("COULD NOT REGISTER DEVICE\n");
@@ -63,7 +69,7 @@ public class ToggleApi {
         }
     }
 
-    private static String sendRequestRegister(String registerUrl) throws IOException, JSONException {
+    private String sendRequestRegister(String registerUrl) throws IOException, JSONException {
         URL url = null;
 
         try {
@@ -93,11 +99,11 @@ public class ToggleApi {
 
     }
 
-    private static String sendRequestUpdate(String updateUrl, String registerUrl,Device device) throws IOException, JSONException {
+    private String sendRequestUpdate(String updateUrl, String registerUrl,Device device) throws IOException, JSONException {
         URL url = null;
         JSONObject jsonObject = new JSONObject();
         Tellstick tellstick = new Tellstick();
-        jsonObject.put("token", tellstick.getDeviceParameter(device.getId(), "code", "0"));
+        jsonObject.put("token", controller.getToken(device.getId()));
         try {
             url = new URL(updateUrl);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -110,7 +116,7 @@ public class ToggleApi {
             }
 
             if (con.getResponseCode() == 418) return sendRequestRegister(registerUrl);
-            else if (con.getResponseCode() == 200) return tellstick.getDeviceParameter(device.getId(), "code", "0");
+            else if (con.getResponseCode() == 200) return controller.getToken(device.getId());
             else throw new ConnectException();
         } catch (Exception e) {
             throw new ConnectException("Could not connect to API");
@@ -118,7 +124,7 @@ public class ToggleApi {
 
     }
 
-    private static String generateString(int length) {
+    private String generateString(int length) {
         final String TOKEN_CHAR_STRING = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
         StringBuilder builder = new StringBuilder();

@@ -2,7 +2,6 @@ package org.toggle.toggleio.application.controller;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.simple.parser.ParseException;
 import org.toggle.toggleio.application.integration.JsonFile;
 import org.toggle.toggleio.application.model.TellstickCore;
 
@@ -29,21 +28,21 @@ public class Controller {
         return TellstickCore.off(id);
     }
 
-    public synchronized void writeJSON(String filename, org.json.simple.JSONObject jsonObject)throws IOException {
-
-        try {
-            JsonFile.write(jsonObject, filename);
-        }catch (IOException e){
-            throw new IOException("Could not write to file");
-        }
-
+    public synchronized void addDevice(int id, String token) {
+        JsonFile.addDevice(id, token);
     }
 
-    public synchronized org.json.simple.JSONObject readJSON(String filename) throws IOException{
-        try {
-            return JsonFile.read(filename);
-        } catch (ParseException| IOException e) {
-          throw new IOException("Could not read the file");
-        }
+    public synchronized void removeDevice(int id) {
+        JsonFile.removeDevice(id);
     }
+
+    public synchronized void setToken(int id, String token) {
+        JsonFile.setToken(id, token);
+    }
+
+    public synchronized String getToken(int id) {
+        return JsonFile.getToken(id);
+    }
+
+
 }

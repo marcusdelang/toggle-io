@@ -1,4 +1,4 @@
-package org.toggle.toggleio.application.controller;
+/*package org.toggle.toggleio.application.controller;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,5 +53,5 @@ public class ControllerStub extends Controller {
         jsonObject.put("devices", list);
         return jsonObject;
     }
-}
+}*/
 

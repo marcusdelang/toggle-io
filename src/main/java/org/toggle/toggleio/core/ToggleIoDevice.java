@@ -25,9 +25,9 @@ public class ToggleIoDevice {
 
 
         System.out.println("Please enter a name: ");
-        input = myObj.nextLine();
-        if (isQuit(input)) return;
-        else deviceConfig.setName(input);
+        String nameInput = myObj.nextLine();
+        if (isQuit(nameInput)) return;
+        else deviceConfig.setName(nameInput);
 
         System.out.println("Please enter the type of device: ");
         input = myObj.nextLine();
@@ -41,10 +41,9 @@ public class ToggleIoDevice {
 
         deviceConfig.setParam("house", "953934");
         deviceConfig.setParam("unit", "10");
-        deviceConfig.setParam("code","0");
-
         System.out.println("Now adding device...");
-        System.out.println(tellstick.addDevice(deviceConfig));
+        tellstick.addDevice(deviceConfig);
+        controller.addDevice(tellstick.getDeviceIdByName(nameInput), "0");
 
         tellstick.close();
     }
@@ -63,6 +62,29 @@ public class ToggleIoDevice {
             try {
                 System.out.println("Removing device "+ input);
                 tellstick.removeDevice((Integer.parseInt(input)));
+                controller.removeDevice(Integer.parseInt(input));
+                return;
+            }catch (NumberFormatException|NullPointerException nfe){
+                System.out.println("Please enter a valid number");
+            }
+
+        }
+
+    }
+    public void learnDevice(){
+        Tellstick tellstick = new Tellstick();
+        tellstick.init();
+        Scanner myObj = new Scanner(System.in);  // Create a Scanner object
+
+        while (true) {
+            System.out.println("Learning device, enter -q to go back");
+            System.out.println("Enter ID of device you want to learn: ");
+
+            String input = myObj.nextLine();
+            if (isQuit(input))return;
+            try {
+                System.out.println("Learning device "+ input);
+                tellstick.learn((Integer.parseInt(input)));
                 return;
             }catch (NumberFormatException|NullPointerException nfe){
                 System.out.println("Please enter a valid number");

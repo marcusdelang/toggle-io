@@ -14,7 +14,7 @@ import java.util.ArrayList;
  * This class contains functions for handling a HTTP request that is meant for a telldus service
  */
 public class RequestHandler {
-    final private static String DEVICE_FILE = "devices.json";
+
     Controller controller;
 
     public RequestHandler(Controller controller) {
@@ -55,7 +55,7 @@ public class RequestHandler {
         ArrayList<Device> devices = tellstick.getDevices();
         for (int i = 0; i < devices.size(); i++) {
             Device device = devices.get(i);
-            if(tellstick.getDeviceParameter(device.getId(),"code", "0").equals(token)){
+            if(controller.getToken(device.getId()).equals(token)){
                 id = device.getId();
                 deviceExist = true;
             }
