@@ -87,16 +87,14 @@ public class ToggleServer implements Runnable{
                         response = requestHandler.handleRequest(clientSentence);
                     } catch (JSONException pe) {
                         response = HttpResponse.httpInternalServerError();
-                        System.out.println("Responding with:\n" + response + "\n\n");
                         outToClient.writeBytes(response);
                         throw pe;
                     }
-                    System.out.println("Responding with:\n" + response + "\n\n");
                     outToClient.writeBytes(response);
                     fromClient.close();
                     connectionSocket.close();
                 } catch (SocketTimeoutException ste) {
-                    System.out.println("Connection timed out!");
+
                     connectionSocket.close();
                 } catch (JSONException pe) {
                     System.out.println("Something is wrong with the JSON file!");
@@ -127,8 +125,8 @@ public class ToggleServer implements Runnable{
     public boolean isClosed() {
         return closed;
     }
-    public void closeSocket(){
-
+    public void closeServer(){
+        setExit(true);
         try {
             welcomeSocket.close();
         }catch (IOException io){

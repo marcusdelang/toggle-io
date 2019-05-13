@@ -11,23 +11,23 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MenuView {
-    // final private static String API_REGISTER_URL = "http://130.229.151.183/api/device/register";
-    //final private static String API_UPDATE_URL = "http://130.229.151.183/api/device/update";
+    final private static String API_REGISTER_URL = "http://130.229.151.183/api/device/register";
+    final private static String API_UPDATE_URL = "http://130.229.151.183/api/device/update";
 
     private Controller controller;
     private ToggleServer toggleServer;
     private Tellstick tellstick;
     private ToggleIoDevice toggleIoDevice;
     private ToggleApi toggleApi;
-    final private static String API_REGISTER_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/register";
-    final private static String API_UPDATE_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/update";
+    //final private static String API_REGISTER_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/register";
+   // final private static String API_UPDATE_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/update";
 
     public MenuView(Controller controller){
         this.controller = controller;
         this.toggleServer = new ToggleServer(new RequestHandler(controller));
         this.tellstick  = new Tellstick();
         this.toggleIoDevice = new ToggleIoDevice(controller);
-        this.toggleApi = new ToggleApi(controller);
+        this.toggleApi = new ToggleApi(controller,API_REGISTER_URL,API_UPDATE_URL);
     }
 
     public void runtime(String[] args) {
@@ -40,17 +40,17 @@ public class MenuView {
                 case "1":
                     if (tellstick.getNumberOfDevices()==0)break;
                     if (toggleServer.isClosed()) {
-                            toggleApi.requestSlot(API_REGISTER_URL, API_UPDATE_URL);
-                            runNewServer(args);
+                            toggleApi.requestSlot();
+                            runServer(args);
                     } else if (!toggleServer.isClosed() && !toggleServer.exiting()) {
-                        closeServer();
+                        toggleServer.closeServer();
                     }
                     break;
                 case "2":
                     if (toggleServer.isClosed()) toggleIoDevice.addDevice();
                     else {
                         tellstick.close();
-                        if (!toggleServer.isClosed()) closeServer();
+                        if (!toggleServer.isClosed()) toggleServer.closeServer();
                         return;
                     }
                     break;
@@ -62,7 +62,7 @@ public class MenuView {
                     break;
                 case "5":
                     tellstick.close();
-                    if (!toggleServer.isClosed()) closeServer();
+                    if (!toggleServer.isClosed()) toggleServer.closeServer();
                     return;
             }
             menuRefresh();
@@ -101,12 +101,8 @@ public class MenuView {
         }
     }
 
-    private void closeServer() {
-        toggleServer.setExit(true);
-        toggleServer.closeSocket();
-    }
 
-    private void runNewServer(String[] args) {
+    private void runServer(String[] args) {
         Thread serverThread = new Thread(toggleServer, "T1");
         if (args.length > 0) {
             try {

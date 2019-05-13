@@ -35,7 +35,6 @@ public class RequestHandler {
                 return response;
             }
         } catch (Exception e) {
-            e.printStackTrace();
             return response;
         }
 

@@ -2,7 +2,6 @@ package org.toggle.toggleio.core;
 
 
 import org.toggle.toggleio.application.controller.Controller;
-import org.toggle.toggleio.core.MenuView;
 
 /**
  * This class handles the startup of the toggle-io server

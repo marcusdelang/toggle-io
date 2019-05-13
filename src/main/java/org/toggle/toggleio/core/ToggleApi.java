@@ -23,32 +23,39 @@ import org.json.simple.parser.ParseException;
  * The class requires that the toggle-api is up and running or else you will get a ConnectionException
  */
 public class ToggleApi {
-
-    final private static int DEFAULT_TOKEN_LENGTH = 256;
-    final private static String CONFIG_FILE = "confg.json";
     private Controller controller;
+    private Tellstick tellstick;
+    private String registerUrl;
+    private String updateUrl;
 
-    public ToggleApi(Controller controller){
+    /**
+     *
+     * @param controller
+     * @param registerUrl
+     * @param updateUrl
+     */
+    public ToggleApi(Controller controller, String registerUrl, String updateUrl){
         this.controller = controller;
+        this.registerUrl = registerUrl;
+        this.updateUrl = updateUrl;
+        this.tellstick = new Tellstick();
     }
 
     /**
      * This function will request a new slot on the API or
      * update the IP on the API to the current one if the TOKEN is NOT expired
      *
-     * @param registerUrl toggle Register device URL
-     * @param updateUrl toggle Update device token URL
+
      */
-    public void requestSlot(String registerUrl, String updateUrl)  {
-        Tellstick tellstick = new Tellstick();
+    public void requestSlot()  {
         int numberOfDevices = tellstick.getNumberOfDevices();
         if (numberOfDevices == 0) return;
         System.out.flush();
         System.out.println("Registering devices...");
-        register(registerUrl, updateUrl, tellstick);
+        register();
     }
 
-    private void register(String registerUrl, String updateUrl, Tellstick tellstick) {
+    private void register() {
         String token;
         ArrayList<Device> deviceList = tellstick.getDevices();
         for (int i = 0; i < deviceList.size(); i++) {
@@ -57,8 +64,8 @@ public class ToggleApi {
             System.out.print("Name: " + device.getName() + ", ");
             try {
                 if (token.length() == 0) throw new IOException();
-                if (token.equals("0")) token = sendRequestRegister(registerUrl);
-                else token = sendRequestUpdate(updateUrl,registerUrl, device);
+                if (token.equals("0")) token = sendRequestRegister();
+                else token = sendRequestUpdate(device);
                 controller.setToken(device.getId(), token);
                 System.out.print("Token: " + token+"\n\n");
             } catch (IOException|JSONException io) {
@@ -67,7 +74,7 @@ public class ToggleApi {
         }
     }
 
-    private String sendRequestRegister(String registerUrl) throws IOException, JSONException {
+    private String sendRequestRegister() throws IOException, JSONException {
         URL url = null;
 
         try {
@@ -96,10 +103,9 @@ public class ToggleApi {
 
     }
 
-    private String sendRequestUpdate(String updateUrl, String registerUrl,Device device) throws IOException, JSONException {
+    private String sendRequestUpdate(Device device) throws IOException, JSONException {
         URL url = null;
         JSONObject jsonObject = new JSONObject();
-        Tellstick tellstick = new Tellstick();
         jsonObject.put("token", controller.getToken(device.getId()));
         try {
             url = new URL(updateUrl);
@@ -112,7 +118,7 @@ public class ToggleApi {
                 os.write(input, 0, input.length);
             }
 
-            if (con.getResponseCode() == 418) return sendRequestRegister(registerUrl);
+            if (con.getResponseCode() == 418) return sendRequestRegister();
             else if (con.getResponseCode() == 200) return controller.getToken(device.getId());
             else throw new ConnectException();
         } catch (Exception e) {

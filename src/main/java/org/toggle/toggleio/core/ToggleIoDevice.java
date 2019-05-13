@@ -1,9 +1,12 @@
 package org.toggle.toggleio.core;
 
+import net.jstick.api.Device;
 import net.jstick.api.DeviceConfig;
 import net.jstick.api.Tellstick;
 import org.toggle.toggleio.application.controller.Controller;
 
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 public class ToggleIoDevice {
@@ -39,7 +42,28 @@ public class ToggleIoDevice {
         if (isQuit(input)) return;
         else deviceConfig.setProtocol(input);
 
-        deviceConfig.setParam("house", "953934");
+
+
+        Random rand = new Random();
+
+        int n;
+        ArrayList<Device> deviceList = tellstick.getDevices();
+        boolean houseExists = false;
+
+        do{
+            n = rand.nextInt(67108863)+1;
+            for (int i = 0; i < deviceList.size(); i++) {
+                Device device = deviceList.get(i);
+                String house = tellstick.getDeviceParameter(device.getId(), "house", "0");
+                if (Integer.parseInt(house) == n){
+                    houseExists = true;
+                    break;
+                }
+            }
+        } while (houseExists);
+
+        deviceConfig.setParam("house", Integer.toString(n));
+
         deviceConfig.setParam("unit", "10");
         System.out.println("Now adding device...");
         tellstick.addDevice(deviceConfig);
@@ -79,6 +103,7 @@ public class ToggleIoDevice {
         while (true) {
             System.out.println("Learning device, enter -q to go back");
             System.out.println("Enter ID of device you want to learn: ");
+
 
             String input = myObj.nextLine();
             if (isQuit(input))return;
