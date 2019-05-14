@@ -4,7 +4,6 @@ import net.jstick.api.Device;
 import net.jstick.api.DeviceConfig;
 import net.jstick.api.Tellstick;
 import org.toggle.toggleio.application.controller.Controller;
-
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;

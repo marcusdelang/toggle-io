@@ -1,7 +1,6 @@
 package org.toggle.toggleio.server;
 
 import org.json.JSONException;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;

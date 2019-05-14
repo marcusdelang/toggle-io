@@ -5,10 +5,9 @@ import net.jstick.api.Tellstick;
 import org.toggle.toggleio.application.controller.Controller;
 import org.toggle.toggleio.server.RequestHandler;
 import org.toggle.toggleio.server.ToggleServer;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+
 
 public class MenuView {
     final private static String API_REGISTER_URL = "http://130.229.145.217/api/device/register";
@@ -33,7 +32,6 @@ public class MenuView {
     public void runtime(String[] args) {
         menuRefresh();
         while (true) {
-
             Scanner scanner = new Scanner(System.in);  // Create a Scanner object
             String input = scanner.nextLine();
             switch (input) {
@@ -50,7 +48,7 @@ public class MenuView {
                     if (toggleServer.isClosed()) toggleIoDevice.addDevice();
                     else {
                         tellstick.close();
-                        if (!toggleServer.isClosed()) toggleServer.closeServer();
+                        toggleServer.closeServer();
                         return;
                     }
                     break;
@@ -61,11 +59,12 @@ public class MenuView {
                     if (toggleServer.isClosed()) toggleIoDevice.learnDevice();
                     break;
                 case "5":
-                    if (!toggleServer.isClosed()) {
-                        toggleServer.closeServer();
+                    if (toggleServer.isClosed()) {
                         tellstick.close();
+                        return;
                     }
-                    return;
+                    break;
+
             }
             menuRefresh();
         }

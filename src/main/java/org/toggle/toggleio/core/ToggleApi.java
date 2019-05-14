@@ -8,12 +8,9 @@ import java.util.ArrayList;
 import net.jstick.api.Device;
 import org.toggle.toggleio.application.controller.Controller;
 import net.jstick.api.Tellstick;
-
-
-import org.json.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.simple.parser.ParseException;
+
 
 
 
