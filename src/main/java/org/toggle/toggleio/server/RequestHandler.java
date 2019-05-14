@@ -5,7 +5,6 @@ import net.jstick.api.Tellstick;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.toggle.toggleio.application.controller.Controller;
-
 import java.util.ArrayList;
 
 
@@ -13,7 +12,9 @@ import java.util.ArrayList;
  * This class contains functions for handling a HTTP request that is meant for a telldus service
  */
 public class RequestHandler {
-
+    final static int ERROR_CMD_NOT_SUPPORTED = 1;
+    final static int SUCCESS = 0;
+    final static int ERROR = 2;
     Controller controller;
 
     public RequestHandler(Controller controller) {
@@ -77,7 +78,9 @@ public class RequestHandler {
             else response = HttpResponse.httpInternalServerError();
         } else if (endpoint.equals("/dim")) {
             try {
-                if (controller.dim(id,Integer.parseInt((String) JSONInRequest.get("dim"))))return HttpResponse.httpOk();
+                int code = controller.dim(id,Integer.parseInt((String) JSONInRequest.get("dim")));
+                if (code == 0)return HttpResponse.httpOk();
+                else if (code == ERROR_CMD_NOT_SUPPORTED) return HttpResponse.httpBadRequest();
                 else return HttpResponse.httpInternalServerError();
             }catch (JSONException json){
                 return HttpResponse.httpBadRequest();

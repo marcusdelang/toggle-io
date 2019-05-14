@@ -61,8 +61,10 @@ public class MenuView {
                     if (toggleServer.isClosed()) toggleIoDevice.learnDevice();
                     break;
                 case "5":
-                    tellstick.close();
-                    if (!toggleServer.isClosed()) toggleServer.closeServer();
+                    if (!toggleServer.isClosed()) {
+                        toggleServer.closeServer();
+                        tellstick.close();
+                    }
                     return;
             }
             menuRefresh();

@@ -49,6 +49,11 @@ public class JsonFile {
         }
     }
 
+    /**
+     * Adds a device with supplied id and token to file DEVICE_FILE
+     * @param id
+     * @param token
+     */
     public static void addDevice(int id, String token) {
         JSONArray jsonArray = new JSONArray();
         try {
@@ -83,6 +88,10 @@ public class JsonFile {
 
     }
 
+    /**
+     * Removes device with supplied id from the JSON file defined in DEVICE_FILE
+     * @param id Device ID
+     */
     public static void removeDevice(int id) {
         JSONArray jsonArray;
         try {
@@ -107,6 +116,11 @@ public class JsonFile {
         }
     }
 
+    /**
+     * Set the device token if the supplied device with id exits
+     * @param id
+     * @param token
+     */
     public static void setToken(int id, String token) {
         JSONArray jsonArray;
         try {
@@ -131,6 +145,11 @@ public class JsonFile {
         }
     }
 
+    /**
+     * Returns the token of device supplied if it exists, else returns null
+     * @param id
+     * @return
+     */
     public static String getToken(int id) {
         JSONArray jsonArray;
         try {

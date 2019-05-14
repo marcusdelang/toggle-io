@@ -2,16 +2,11 @@ package org.toggle.toggleio.application.controller;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.toggle.toggleio.application.integration.JsonFile;
-import org.toggle.toggleio.application.model.TellstickCore;
-
-
 
 public class ControllerStub extends Controller {
 
     /**
      * Returns device status depending on type of device
-     *
      * @return JSONObject
      */
 
@@ -34,8 +29,8 @@ public class ControllerStub extends Controller {
     }
 
     @Override
-    public boolean dim(int id, int amount) {
-        return true;
+    public int dim(int id, int amount) {
+        return 0;
     }
     @Override
     public synchronized void setToken(int id, String token) {

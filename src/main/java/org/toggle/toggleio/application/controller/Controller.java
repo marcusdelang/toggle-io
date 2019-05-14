@@ -5,8 +5,6 @@ import org.json.JSONObject;
 import org.toggle.toggleio.application.integration.JsonFile;
 import org.toggle.toggleio.application.model.TellstickCore;
 
-import java.io.IOException;
-
 
 public class Controller {
 
@@ -27,7 +25,8 @@ public class Controller {
     public boolean off(int id) {
         return TellstickCore.off(id);
     }
-    public boolean dim(int id, int amount ){
+
+    public int dim(int id, int amount ){
         return TellstickCore.dim(id, amount);
     }
 
