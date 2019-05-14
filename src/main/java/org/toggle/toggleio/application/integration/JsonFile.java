@@ -37,7 +37,7 @@ public class JsonFile {
      * @param jsonObject to write in file
      * @throws IOException if
      */
-    public static void write(JSONArray jsonObject) throws IOException {
+    private static void write(JSONArray jsonObject) throws IOException {
         try (FileWriter file = new FileWriter(DEVICE_FILE)) {
 
             file.write(jsonObject.toJSONString());

@@ -5,14 +5,12 @@ import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+
 import net.jstick.api.Device;
 import org.toggle.toggleio.application.controller.Controller;
 import net.jstick.api.Tellstick;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-
-
 
 
 /**
@@ -26,12 +24,11 @@ public class ToggleApi {
     private String updateUrl;
 
     /**
-     *
      * @param controller
      * @param registerUrl
      * @param updateUrl
      */
-    public ToggleApi(Controller controller, String registerUrl, String updateUrl){
+    public ToggleApi(Controller controller, String registerUrl, String updateUrl) {
         this.controller = controller;
         this.registerUrl = registerUrl;
         this.updateUrl = updateUrl;
@@ -41,10 +38,8 @@ public class ToggleApi {
     /**
      * This function will request a new slot on the API or
      * update the IP on the API to the current one if the TOKEN is NOT expired
-     *
-
      */
-    public void requestSlot()  {
+    public void requestSlot() {
         int numberOfDevices = tellstick.getNumberOfDevices();
         if (numberOfDevices == 0) return;
         System.out.flush();
@@ -63,9 +58,12 @@ public class ToggleApi {
                 if (token.length() == 0) throw new IOException();
                 if (token.equals("0")) token = sendRequestRegister();
                 else token = sendRequestUpdate(device);
-                controller.setToken(device.getId(), token);
-                System.out.print("Token: " + token+"\n\n");
-            } catch (IOException|JSONException io) {
+                if (token.equals("0")) System.out.print("COULD NOT REGISTER DEVICE\n");
+                else {
+                    controller.setToken(device.getId(), token);
+                    System.out.print("Token: " + token + "\n\n");
+                }
+            } catch (IOException | JSONException io) {
                 System.out.print("COULD NOT REGISTER DEVICE\n");
             }
         }
@@ -91,6 +89,7 @@ public class ToggleApi {
                     response.append(responseLine.trim());
                 }
                 JSONObject jsonObject = new JSONObject(response.toString());
+                System.out.println(con.getResponseCode());
 
                 return (String) jsonObject.get("token");
 
@@ -118,10 +117,10 @@ public class ToggleApi {
                 byte[] input = jsonObject.toString().getBytes("utf-8");
                 os.write(input, 0, input.length);
             }
-
-            if (con.getResponseCode() == 418) return sendRequestRegister();
+            System.out.println(con.getResponseCode());
+            if (con.getResponseCode() == 467) return sendRequestRegister();
             else if (con.getResponseCode() == 200) return controller.getToken(device.getId());
-            else throw new ConnectException();
+            else return "0";
         } catch (Exception e) {
             throw new ConnectException("Could not connect to API");
         }

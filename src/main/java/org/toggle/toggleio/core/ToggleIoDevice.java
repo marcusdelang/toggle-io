@@ -70,7 +70,6 @@ public class ToggleIoDevice {
 
         tellstick.close();
     }
-
     public void removeDevice() {
         Tellstick tellstick = new Tellstick(true);
         tellstick.init();

@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 
 public class MenuView {
-    final private static String API_REGISTER_URL = "http://130.229.145.217/api/device/register";
+   final private static String API_REGISTER_URL = "http://130.229.145.217/api/device/register";
     final private static String API_UPDATE_URL = "http://130.229.145.217/api/device/update";
 
     private Controller controller;
@@ -19,7 +19,7 @@ public class MenuView {
     private ToggleIoDevice toggleIoDevice;
     private ToggleApi toggleApi;
     //final private static String API_REGISTER_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/register";
-   // final private static String API_UPDATE_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/update";
+    //final private static String API_UPDATE_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/update";
 
     public MenuView(Controller controller){
         this.controller = controller;
@@ -54,11 +54,15 @@ public class MenuView {
                     break;
                 case "3":
                     if (toggleServer.isClosed()) toggleIoDevice.removeDevice();
+                    else printDevices();
                     break;
                 case "4":
                     if (toggleServer.isClosed()) toggleIoDevice.learnDevice();
                     break;
                 case "5":
+                    if (toggleServer.isClosed()) printDevices();
+                    break;
+                case "6":
                     if (toggleServer.isClosed()) {
                         tellstick.close();
                         return;
@@ -86,8 +90,12 @@ public class MenuView {
         if (toggleServer.isClosed()) System.out.println("2. Add device");
         if (toggleServer.isClosed()) System.out.println("3. Remove device");
         if (toggleServer.isClosed()) System.out.println("4. Learn device");
-        if (toggleServer.isClosed()) System.out.println("5. Exit program");
-        else System.out.println("2. Exit Program");
+        if (toggleServer.isClosed()) System.out.println("5. Show Devices");
+        if (toggleServer.isClosed()) System.out.println("6. Exit program");
+        else {
+            System.out.println("2. Exit Program");
+            System.out.println("3. Show Devices");
+        }
         tellstick.close();
     }
 
@@ -98,6 +106,8 @@ public class MenuView {
             System.out.println("Name: " + device.getName());
             System.out.println("ID: " + device.getId());
             System.out.println("Token: " + controller.getToken(device.getId()));
+            System.out.println("Type: " + device.getModel());
+
             System.out.println();
         }
     }

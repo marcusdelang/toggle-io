@@ -14,9 +14,7 @@ public class Controller {
      * @return JSONObject
      */
 
-    public JSONObject status(int id) throws JSONException {
-        return TellstickCore.getStatus(id);
-    }
+    public JSONObject status(int id) throws JSONException { return TellstickCore.getStatus(id); }
 
     public boolean on(int id) {
         return TellstickCore.on(id);
