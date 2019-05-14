@@ -35,14 +35,20 @@ public class HttpParse {
    */
   public static String parseContentType(String request) throws IllegalArgumentException{
     String contentType;
+    JSONObject JSONrequest = new JSONObject();
     if (!validHTTP(request)) {
       throw new IllegalArgumentException("Not a valid HTTP request");
     }
     String[] httpParts = request.split("\n\n");
     try {
-      JSONObject JSONrequest = HTTP.toJSONObject(httpParts[0]);
-      contentType = JSONrequest.getString("Content-Type");
+      JSONrequest = HTTP.toJSONObject(httpParts[0]);
+      contentType = JSONrequest.getString("content-type");
     }catch (Exception e){
+     try {
+       contentType = JSONrequest.getString("Content-Type");
+       return contentType;
+     }catch (JSONException je){
+     }
       throw new IllegalArgumentException();
     }
 

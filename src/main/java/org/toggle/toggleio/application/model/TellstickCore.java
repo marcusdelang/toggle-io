@@ -19,8 +19,13 @@ public class TellstickCore {
             JSONObject jsonObject = new JSONObject();
             if (System.getProperty("os.name").equals("Linux")) {
                 Tellstick tellstick = new Tellstick();
+                String status = tellstick.getLastCmd(id).toLowerCase();
 
-                jsonObject.put("status_power", tellstick.getLastCmd(id).toLowerCase());
+                if(status.equals("on")||status.equals("off")) jsonObject.put("status_power", tellstick.getLastCmd(id).toLowerCase());
+                else if (status.startsWith("dim")){
+                    String[] statusArray = status.split(" ");
+                    jsonObject.put("status_dim", statusArray[1]);
+                }
                 tellstick.close();
                 return jsonObject;
             }
@@ -51,18 +56,22 @@ public class TellstickCore {
         return sendCommand(id, OUTLET_OFF);
     }
 
+    public static boolean dim(int id, int amount) {
+        return sendCommand(id, "DIM", amount);
+    }
+
     private static boolean sendCommand(int id, String action) {
         if (System.getProperty("os.name").equals("Linux")) {
             Tellstick tellstick = new Tellstick();
-            tellstick.sendCmd(id, action);
-            return true;
+            if (tellstick.sendCmd(id, action) == 0) return true;
         }
-        boolean success = ScriptRunner.runScript(TelldusScripts.on());
-        try {
-        } catch (Exception e) {
-            return false;
-        }
-        return success;
+        return false;
     }
 
+    private static boolean sendCommand(int id, String action, int amount) {
+        if (System.getProperty("os.name").equals("Linux")) {
+        return ScriptRunner.runScript(TelldusScripts.dim(id, amount));
+        }
+        return false;
+    }
 }

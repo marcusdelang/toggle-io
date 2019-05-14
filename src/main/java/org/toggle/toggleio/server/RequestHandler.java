@@ -9,7 +9,6 @@ import org.toggle.toggleio.application.controller.Controller;
 import java.util.ArrayList;
 
 
-
 /**
  * This class contains functions for handling a HTTP request that is meant for a telldus service
  */
@@ -39,10 +38,10 @@ public class RequestHandler {
         }
 
         JSONObject JSONInRequest = HttpParse.parseJSON(request);
-        if(JSONInRequest==null)return response;
+        if (JSONInRequest == null) return response;
         try {
-            token = (String)JSONInRequest.get("token");
-        }catch (JSONException s){
+            token = (String) JSONInRequest.get("token");
+        } catch (JSONException s) {
             return response;
         }
 
@@ -54,12 +53,12 @@ public class RequestHandler {
         ArrayList<Device> devices = tellstick.getDevices();
         for (int i = 0; i < devices.size(); i++) {
             Device device = devices.get(i);
-            if(controller.getToken(device.getId()).equals(token)){
+            if (controller.getToken(device.getId()).equals(token)) {
                 id = device.getId();
                 deviceExist = true;
             }
         }
-        if(!deviceExist)return HttpResponse.httpBadRequest();
+        if (!deviceExist) return HttpResponse.httpBadRequest();
 
 
         String endpoint;
@@ -76,8 +75,15 @@ public class RequestHandler {
         } else if (endpoint.equals("/off")) {
             if (controller.off(id)) response = HttpResponse.httpOk();
             else response = HttpResponse.httpInternalServerError();
+        } else if (endpoint.equals("/dim")) {
+            try {
+                if (controller.dim(id,Integer.parseInt((String) JSONInRequest.get("dim"))))return HttpResponse.httpOk();
+                else return HttpResponse.httpInternalServerError();
+            }catch (JSONException json){
+                return HttpResponse.httpBadRequest();
+            }
         } else if (endpoint.equals("/status")) {
-            response = HttpResponse.httpOk(controller.status(id));
+            return HttpResponse.httpOk(controller.status(id));
         } else return response;
 
         return response;

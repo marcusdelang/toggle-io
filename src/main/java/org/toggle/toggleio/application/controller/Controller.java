@@ -27,6 +27,9 @@ public class Controller {
     public boolean off(int id) {
         return TellstickCore.off(id);
     }
+    public boolean dim(int id, int amount ){
+        return TellstickCore.dim(id, amount);
+    }
 
     public synchronized void addDevice(int id, String token) {
         JsonFile.addDevice(id, token);

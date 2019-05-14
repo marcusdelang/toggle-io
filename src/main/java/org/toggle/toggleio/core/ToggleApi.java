@@ -80,6 +80,7 @@ public class ToggleApi {
         try {
             url = new URL(registerUrl);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setConnectTimeout(5000);
             con.setRequestMethod("POST");
             con.setDoOutput(true);
             try (OutputStream os = con.getOutputStream()) {
@@ -110,6 +111,7 @@ public class ToggleApi {
         try {
             url = new URL(updateUrl);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setConnectTimeout(5000);
             con.setRequestMethod("POST");
             con.setRequestProperty("Content-Type", "application/json");
             con.setDoOutput(true);

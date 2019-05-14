@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MenuView {
-    final private static String API_REGISTER_URL = "http://130.229.151.183/api/device/register";
-    final private static String API_UPDATE_URL = "http://130.229.151.183/api/device/update";
+    final private static String API_REGISTER_URL = "http://130.229.145.217/api/device/register";
+    final private static String API_UPDATE_URL = "http://130.229.145.217/api/device/update";
 
     private Controller controller;
     private ToggleServer toggleServer;
