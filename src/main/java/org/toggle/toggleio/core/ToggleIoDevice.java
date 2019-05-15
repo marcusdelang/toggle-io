@@ -3,7 +3,11 @@ package org.toggle.toggleio.core;
 import net.jstick.api.Device;
 import net.jstick.api.DeviceConfig;
 import net.jstick.api.Tellstick;
+import org.json.JSONException;
 import org.toggle.toggleio.application.controller.Controller;
+import org.toggle.toggleio.application.model.TelldusScripts;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -11,8 +15,10 @@ import java.util.Scanner;
 public class ToggleIoDevice {
 
     private Controller controller;
+    private ToggleApi toggleApi;
 
-    ToggleIoDevice(Controller controller) {
+    ToggleIoDevice(Controller controller, ToggleApi toggleApi) {
+        this.toggleApi = toggleApi;
         this.controller = controller;
     }
 
@@ -25,16 +31,55 @@ public class ToggleIoDevice {
         System.out.println("Adding new device, enter -q to go back:");
 
 
-
         System.out.println("Please enter a name: ");
         String nameInput = myObj.nextLine();
         if (isQuit(nameInput)) return;
         else deviceConfig.setName(nameInput);
 
+
+        System.out.flush();
         System.out.println("Please enter the type of device: ");
         input = myObj.nextLine();
-        if (isQuit(input)) return;
-        else deviceConfig.setModel(input);
+        boolean validDevice = false;
+        while (!validDevice) {
+            switch (input) {
+                case "selflearning-switch":
+                    deviceConfig.setModel(input);
+                    deviceConfig.setParam("house", Integer.toString(randomHouse()));
+                    deviceConfig.setParam("unit", "10");
+                    validDevice = true;
+                    break;
+                case "codeswitch":
+                    deviceConfig.setModel(input);
+                    while (true) {
+                        System.out.println("Please enter the house A-P: ");
+                        input = myObj.nextLine();
+                        if (isQuit(input))return;
+                        else if (input.matches(".*[a-pA-P]+.*")){
+                            deviceConfig.setParam("house", input);
+                            break;
+                        }
+                    }
+                    while (true) {
+                        System.out.println("Please enter the unit 1-16: ");
+                        input = myObj.nextLine();
+                        if (isQuit(input)) return;
+                        else if (Integer.parseInt(input) > 0 && Integer.parseInt(input) < 17) {
+                            deviceConfig.setParam("unit", input);
+                            break;
+                        }
+                    }
+                    validDevice = true;
+                    break;
+                case "-q":
+                    return;
+                default:
+                    clearTerminal();
+                    System.out.println("Please enter a valid device!");
+                    input = myObj.nextLine();
+                    break;
+            }
+        }
 
         System.out.println("Please enter the protocol it shall use: ");
         input = myObj.nextLine();
@@ -42,58 +87,71 @@ public class ToggleIoDevice {
         else deviceConfig.setProtocol(input);
 
 
-
-        Random rand = new Random();
-
-        int n;
-        ArrayList<Device> deviceList = tellstick.getDevices();
-        boolean houseExists = false;
-
-        do{
-            n = rand.nextInt(67108863)+1;
-            for (int i = 0; i < deviceList.size(); i++) {
-                Device device = deviceList.get(i);
-                String house = tellstick.getDeviceParameter(device.getId(), "house", "0");
-                if (Integer.parseInt(house) == n){
-                    houseExists = true;
-                    break;
-                }
-            }
-        } while (houseExists);
-
-        deviceConfig.setParam("house", Integer.toString(n));
-
-        deviceConfig.setParam("unit", "10");
         System.out.println("Now adding device...");
         tellstick.addDevice(deviceConfig);
         controller.addDevice(tellstick.getDeviceIdByName(nameInput), "0");
 
         tellstick.close();
     }
+
+    private void clearTerminal() {
+        final String ANSI_CLS = "\u001b[2J";
+        final String ANSI_HOME = "\u001b[H";
+        System.out.print(ANSI_CLS + ANSI_HOME);
+    }
+
+    private int randomHouse() {
+        Random rand = new Random();
+        Tellstick tellstick = new Tellstick();
+        int n;
+        ArrayList<Device> deviceList = tellstick.getDevices();
+        boolean houseExists = false;
+
+        do {
+            n = rand.nextInt(67108863) + 1;
+            for (int i = 0; i < deviceList.size(); i++) {
+                Device device = deviceList.get(i);
+                String house = tellstick.getDeviceParameter(device.getId(), "house", "0");
+                if (Integer.parseInt(house) == n) {
+                    houseExists = true;
+                    break;
+                }
+            }
+        } while (houseExists);
+        return n;
+    }
+
     public void removeDevice() {
         Tellstick tellstick = new Tellstick(true);
         tellstick.init();
-        Scanner myObj = new Scanner(System.in);  // Create a Scanner object
+        Scanner myObj = new Scanner(System.in);
 
         while (true) {
             System.out.println("Removing device, enter -q to go back");
             System.out.println("Enter ID of device you want to remove: ");
 
             String input = myObj.nextLine();
-            if (isQuit(input))return;
+            if (isQuit(input)) return;
             try {
-                System.out.println("Removing device "+ input);
+                System.out.println("Removing devi5ce " + input);
                 tellstick.removeDevice((Integer.parseInt(input)));
                 controller.removeDevice(Integer.parseInt(input));
+             /*NOT IMPLEMENTED YET ON API*/
+                /*  try {
+                   toggleApi.removeDevice(controller.getToken(Integer.parseInt(input)));
+               }catch (IOException|JSONException ie){
+               }*/
+               System.out.println("Device removed!");
                 return;
-            }catch (NumberFormatException|NullPointerException nfe){
+            } catch (NumberFormatException | NullPointerException nfe) {
                 System.out.println("Please enter a valid number");
             }
 
         }
 
     }
-    public void learnDevice(){
+
+    public void learnDevice() {
         Tellstick tellstick = new Tellstick();
         tellstick.init();
         Scanner myObj = new Scanner(System.in);  // Create a Scanner object
@@ -104,12 +162,12 @@ public class ToggleIoDevice {
 
 
             String input = myObj.nextLine();
-            if (isQuit(input))return;
+            if (isQuit(input)) return;
             try {
-                System.out.println("Learning device "+ input);
+                System.out.println("Learning device " + input);
                 tellstick.learn((Integer.parseInt(input)));
                 return;
-            }catch (NumberFormatException|NullPointerException nfe){
+            } catch (NumberFormatException | NullPointerException nfe) {
                 System.out.println("Please enter a valid number");
             }
 

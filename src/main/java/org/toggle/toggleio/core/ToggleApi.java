@@ -22,16 +22,18 @@ public class ToggleApi {
     private Tellstick tellstick;
     private String registerUrl;
     private String updateUrl;
+    private String removeUrl;
 
     /**
      * @param controller
      * @param registerUrl
      * @param updateUrl
      */
-    public ToggleApi(Controller controller, String registerUrl, String updateUrl) {
+    public ToggleApi(Controller controller, String registerUrl, String updateUrl, String removeUrl) {
         this.controller = controller;
         this.registerUrl = registerUrl;
         this.updateUrl = updateUrl;
+        this.removeUrl = removeUrl;
         this.tellstick = new Tellstick();
     }
 
@@ -39,6 +41,31 @@ public class ToggleApi {
      * This function will request a new slot on the API or
      * update the IP on the API to the current one if the TOKEN is NOT expired
      */
+    public void removeDevice(String token)throws IOException, JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("token", token);
+        sendJSONRequest(removeUrl, jsonObject);
+    }
+    private HttpURLConnection sendJSONRequest(String endUrl, JSONObject jsonObject)throws IOException {
+        URL url = null;
+
+        try {
+            url = new URL(endUrl);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setConnectTimeout(5000);
+            con.setReadTimeout(5000);
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type", "application/json");
+            con.setDoOutput(true);
+            try (OutputStream os = con.getOutputStream()) {
+                byte[] input = jsonObject.toString().getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
+            return con;
+        } catch (Exception e) {
+            throw new ConnectException("Could not connect to API");
+        }
+    }
     public void requestSlot() {
         int numberOfDevices = tellstick.getNumberOfDevices();
         if (numberOfDevices == 0) return;
@@ -102,28 +129,15 @@ public class ToggleApi {
     }
 
     private String sendRequestUpdate(Device device) throws IOException, JSONException {
-        URL url = null;
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("token", controller.getToken(device.getId()));
         try {
-            url = new URL(updateUrl);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setConnectTimeout(5000);
-            con.setReadTimeout(5000);
-            con.setRequestMethod("POST");
-            con.setRequestProperty("Content-Type", "application/json");
-            con.setDoOutput(true);
-            try (OutputStream os = con.getOutputStream()) {
-                byte[] input = jsonObject.toString().getBytes("utf-8");
-                os.write(input, 0, input.length);
-            }
-            System.out.println(con.getResponseCode());
+            HttpURLConnection con = sendJSONRequest(updateUrl, jsonObject);
             if (con.getResponseCode() == 467) return sendRequestRegister();
             else if (con.getResponseCode() == 200) return controller.getToken(device.getId());
             else return "0";
         } catch (Exception e) {
             throw new ConnectException("Could not connect to API");
         }
-
     }
 }

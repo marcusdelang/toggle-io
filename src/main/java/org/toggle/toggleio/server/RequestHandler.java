@@ -69,14 +69,14 @@ public class RequestHandler {
             return response;
         }
 
-        if (endpoint.equals("/on")) {
+        if (endpoint.equals("/io/device/on")) {
             if (controller.on(id)) response = HttpResponse.httpOk();
             else response = HttpResponse.httpInternalServerError();
 
-        } else if (endpoint.equals("/off")) {
+        } else if (endpoint.equals("io/device/off")) {
             if (controller.off(id)) response = HttpResponse.httpOk();
             else response = HttpResponse.httpInternalServerError();
-        } else if (endpoint.equals("/dim")) {
+        } else if (endpoint.equals("io/device/dim")) {
             try {
                 int code = controller.dim(id,Integer.parseInt((String) JSONInRequest.get("dim")));
                 if (code == 0)return HttpResponse.httpOk();
@@ -85,7 +85,7 @@ public class RequestHandler {
             }catch (JSONException json){
                 return HttpResponse.httpBadRequest();
             }
-        } else if (endpoint.equals("/status")) {
+        } else if (endpoint.equals("/io/device/status")) {
             return HttpResponse.httpOk(controller.status(id));
         } else return response;
 

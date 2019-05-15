@@ -10,9 +10,9 @@ import java.util.Scanner;
 
 
 public class MenuView {
-   final private static String API_REGISTER_URL = "http://130.229.145.217/api/device/register";
-    final private static String API_UPDATE_URL = "http://130.229.145.217/api/device/update";
-
+   final private static String API_REGISTER_URL = "http://130.229.147.100/api/device/register";
+   final private static String API_UPDATE_URL = "http://130.229.147.100/api/device/update";
+    final private static String API_REMOVE_URL = "http://130.229.147.100/api/device/remove";
     private Controller controller;
     private ToggleServer toggleServer;
     private Tellstick tellstick;
@@ -25,8 +25,8 @@ public class MenuView {
         this.controller = controller;
         this.toggleServer = new ToggleServer(new RequestHandler(controller));
         this.tellstick  = new Tellstick();
-        this.toggleIoDevice = new ToggleIoDevice(controller);
-        this.toggleApi = new ToggleApi(controller,API_REGISTER_URL,API_UPDATE_URL);
+        this.toggleApi = new ToggleApi(controller,API_REGISTER_URL,API_UPDATE_URL,API_REMOVE_URL);
+        this.toggleIoDevice = new ToggleIoDevice(controller, toggleApi);
     }
 
     public void runtime(String[] args) {
