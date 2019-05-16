@@ -153,7 +153,7 @@ public class JsonFile {
         try {
             jsonArray = read();
         } catch (Exception e) {
-            return null;
+            return "-1";
         }
         JSONObject jsonObject = new JSONObject();
         for (int i = 0; i < jsonArray.size(); i++) {
@@ -163,7 +163,7 @@ public class JsonFile {
                 return (String) jsonObject.get("token");
             }
         }
-        return null;
+        return "-1";
 
     }
 }

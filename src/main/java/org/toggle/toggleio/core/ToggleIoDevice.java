@@ -171,9 +171,7 @@ public class ToggleIoDevice {
             if (isQuit(input)) return;
             try {
                 System.out.println("Removing device " + input);
-
-                /*NOT IMPLEMENTED YET ON API*/
-                if (!controller.getToken(Integer.parseInt(input)).equals("0")) {
+                if (!controller.getToken(Integer.parseInt(input)).equals("0")&&!controller.getToken(Integer.parseInt(input)).equals("-1")) {
                     try {
                         toggleApi.removeDevice(controller.getToken(Integer.parseInt(input)));
                     } catch (IOException | JSONException ie) {

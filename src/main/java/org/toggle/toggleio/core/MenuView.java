@@ -10,16 +10,25 @@ import java.util.Scanner;
 
 
 public class MenuView {
-   final private static String API_REGISTER_URL = "http://130.229.147.100/api/device/register";
-   final private static String API_UPDATE_URL = "http://130.229.147.100/api/device/update";
-    final private static String API_REMOVE_URL = "http://130.229.147.100/api/device/remove";
+
+    /*
+
+
+    final private static String API_REGISTER_URL = "http://130.229.167.146/api/device/register";
+    final private static String API_UPDATE_URL = "http://130.229.167.146/api/device/update";
+    final private static String API_REMOVE_URL = "http://130.229.167.146/api/device/remove";
+
+     */
     private Controller controller;
     private ToggleServer toggleServer;
     private Tellstick tellstick;
     private ToggleIoDevice toggleIoDevice;
     private ToggleApi toggleApi;
-    //final private static String API_REGISTER_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/register";
-    //final private static String API_UPDATE_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/update";
+
+    final private static String API_REGISTER_URL = "http://toggle-api.eu-gb.mybluemix.net/api/device/register";
+    final private static String API_UPDATE_URL = "http://toggle-api.eu-gb.mybluemix.net/api/device/update";
+    final private static String API_REMOVE_URL = "http://toggle-api.eu-gb.mybluemix.net/api/device/remove";
+
 
     public MenuView(Controller controller){
         this.controller = controller;
@@ -103,24 +112,23 @@ public class MenuView {
     }
 
     private void printDevices() {
-        try {
-
 
             ArrayList<Device> deviceList = tellstick.getDevices();
             for (int i = 0; i < deviceList.size(); i++) {
                 Device device = deviceList.get(i);
-                System.out.println("Name: " + device.getName());
-                System.out.println("ID: " + device.getId());
-                System.out.println("Token: " + controller.getToken(device.getId()));
-                System.out.println("model: " + device.getModel());
-
-                System.out.println();
+                try {
+                    System.out.println("Name: " + device.getName());
+                    System.out.println("ID: " + device.getId());
+                    System.out.println("Token: " + controller.getToken(device.getId()));
+                    System.out.println("model: " + device.getModel());
+                    System.out.println();
+                }
+                 catch (NullPointerException npe){
+                        System.out.println("Corrupted JSON file, please remove all devices fron tellstick.confg and the devices.json file");
+                 }
             }
         }
-        catch (NullPointerException npe){
-            System.out.println("Corrupted JSON file, please remove all devices fron tellstick.confg and the devices.json file");
-        }
-    }
+
 
 
     private void runServer(String[] args) {

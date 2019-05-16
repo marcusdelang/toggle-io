@@ -85,9 +85,9 @@ public class ToggleServer implements Runnable {
                     clientSentence = sentenceBuilder.toString();
 
                     try {
-                      //  System.out.println("CLIENT SENTENCE:\n"+clientSentence+"\n____________________\n");
+                       System.out.println("CLIENT SENTENCE:\n"+clientSentence+"\n____________________\n");
                         response = requestHandler.handleRequest(clientSentence);
-                     //   System.out.println("RESPONSE:\n"+response+"\n___________________________________________\n");
+                       System.out.println("RESPONSE:\n"+response+"\n___________________________________________\n");
                     } catch (JSONException pe) {
                         pe.printStackTrace();
                         response = HttpResponse.httpInternalServerError();
