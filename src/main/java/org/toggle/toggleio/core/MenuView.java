@@ -65,6 +65,9 @@ public class MenuView {
                 case "6":
                     if (toggleServer.isClosed()) {
                         tellstick.close();
+                        final String ANSI_CLS = "\u001b[2J";
+                        final String ANSI_HOME = "\u001b[H";
+                        System.out.print(ANSI_CLS + ANSI_HOME);
                         return;
                     }
                     break;
@@ -100,15 +103,22 @@ public class MenuView {
     }
 
     private void printDevices() {
-        ArrayList<Device> deviceList = tellstick.getDevices();
-        for (int i = 0; i < deviceList.size(); i++) {
-            Device device = deviceList.get(i);
-            System.out.println("Name: " + device.getName());
-            System.out.println("ID: " + device.getId());
-            System.out.println("Token: " + controller.getToken(device.getId()));
-            System.out.println("Type: " + device.getModel());
+        try {
 
-            System.out.println();
+
+            ArrayList<Device> deviceList = tellstick.getDevices();
+            for (int i = 0; i < deviceList.size(); i++) {
+                Device device = deviceList.get(i);
+                System.out.println("Name: " + device.getName());
+                System.out.println("ID: " + device.getId());
+                System.out.println("Token: " + controller.getToken(device.getId()));
+                System.out.println("model: " + device.getModel());
+
+                System.out.println();
+            }
+        }
+        catch (NullPointerException npe){
+            System.out.println("Corrupted JSON file, please remove all devices fron tellstick.confg and the devices.json file");
         }
     }
 

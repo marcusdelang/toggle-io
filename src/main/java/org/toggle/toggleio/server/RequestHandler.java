@@ -73,10 +73,10 @@ public class RequestHandler {
             if (controller.on(id)) response = HttpResponse.httpOk();
             else response = HttpResponse.httpInternalServerError();
 
-        } else if (endpoint.equals("io/device/off")) {
+        } else if (endpoint.equals("/io/device/off")) {
             if (controller.off(id)) response = HttpResponse.httpOk();
             else response = HttpResponse.httpInternalServerError();
-        } else if (endpoint.equals("io/device/dim")) {
+        } else if (endpoint.equals("/io/device/dim")) {
             try {
                 int code = controller.dim(id,Integer.parseInt((String) JSONInRequest.get("dim")));
                 if (code == 0)return HttpResponse.httpOk();

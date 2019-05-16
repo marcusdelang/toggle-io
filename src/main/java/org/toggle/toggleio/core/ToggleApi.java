@@ -44,7 +44,8 @@ public class ToggleApi {
     public void removeDevice(String token)throws IOException, JSONException {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("token", token);
-        sendJSONRequest(removeUrl, jsonObject);
+        HttpURLConnection con = sendJSONRequest(removeUrl, jsonObject);
+        con.getResponseCode();
     }
     private HttpURLConnection sendJSONRequest(String endUrl, JSONObject jsonObject)throws IOException {
         URL url = null;
@@ -61,6 +62,8 @@ public class ToggleApi {
                 byte[] input = jsonObject.toString().getBytes("utf-8");
                 os.write(input, 0, input.length);
             }
+
+
             return con;
         } catch (Exception e) {
             throw new ConnectException("Could not connect to API");

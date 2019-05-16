@@ -148,7 +148,7 @@ public class JsonFile {
      * @param id
      * @return
      */
-    public static String getToken(int id) {
+    public static String getToken(long id) {
         JSONArray jsonArray;
         try {
             jsonArray = read();
