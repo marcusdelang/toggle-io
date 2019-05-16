@@ -4,6 +4,8 @@ Code for input and output against "toggle-api"
 ### __Hardware Requirement__
 - Linux based operating system with telldus-core installed
 
+- Java JDK 12 installed with ```java``` command available
+
 - Internet connection with either globaly routed ip or a set port on router
 
 - Tellstick Duo
@@ -27,4 +29,6 @@ As superuser run the following command in your terminal and replace eth0 with yo
 ```
 iptables -t nat -A PREROUTING -i eth0 -p tcp --dport http -j REDIRECT --to-ports 8080
 ```
+
+### __How to run__
 
