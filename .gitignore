@@ -19,3 +19,4 @@ target/
 .json
 
 confg.json
+devices.json
