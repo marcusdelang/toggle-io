@@ -1,6 +1,8 @@
 package org.toggle.toggleio.server;
 
 import org.json.JSONException;
+import org.toggle.toggleio.core.MenuView;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -16,6 +18,7 @@ import java.net.SocketTimeoutException;
  */
 public class ToggleServer implements Runnable {
     private RequestHandler requestHandler;
+    private MenuView menuView;
     private int port;
     private volatile boolean exit;
     private volatile boolean closed;
@@ -28,7 +31,8 @@ public class ToggleServer implements Runnable {
         this.closed = true;
     }
 
-    public ToggleServer(RequestHandler requestHandler) {
+    public ToggleServer(MenuView menuView, RequestHandler requestHandler) {
+        this.menuView = menuView;
         this.requestHandler = requestHandler;
         this.exit = false;
         this.port = 8080;
@@ -87,6 +91,7 @@ public class ToggleServer implements Runnable {
                     try {
                       //  System.out.println("CLIENT SENTENCE:\n"+clientSentence+"\n____________________\n");
                         response = requestHandler.handleRequest(clientSentence);
+                        menuView.menuRefresh();
                      //   System.out.println("RESPONSE:\n"+response+"\n___________________________________________\n");
                     } catch (JSONException pe) {
                         pe.printStackTrace();

@@ -23,7 +23,7 @@ public class MenuView {
 
     public MenuView(Controller controller){
         this.controller = controller;
-        this.toggleServer = new ToggleServer(new RequestHandler(controller));
+        this.toggleServer = new ToggleServer(this, new RequestHandler(controller));
         this.tellstick  = new Tellstick();
         this.toggleApi = new ToggleApi(controller,API_REGISTER_URL,API_UPDATE_URL,API_REMOVE_URL);
         this.toggleIoDevice = new ToggleIoDevice(controller, toggleApi);
@@ -32,7 +32,8 @@ public class MenuView {
     public void runtime(String[] args) {
         menuRefresh();
         while (true) {
-            Scanner scanner = new Scanner(System.in);  // Create a Scanner object
+            Scanner scanner = new Scanner(System.in);
+
             String input = scanner.nextLine();
             switch (input) {
                 case "1":
@@ -60,9 +61,6 @@ public class MenuView {
                     if (toggleServer.isClosed()) toggleIoDevice.learnDevice();
                     break;
                 case "5":
-                    if (toggleServer.isClosed()) printDevices();
-                    break;
-                case "6":
                     if (toggleServer.isClosed()) {
                         tellstick.close();
                         final String ANSI_CLS = "\u001b[2J";
@@ -78,7 +76,7 @@ public class MenuView {
 
     }
 
-    private void menuRefresh() {
+    public void menuRefresh() {
 
         final String ANSI_CLS = "\u001b[2J";
         final String ANSI_HOME = "\u001b[H";
@@ -93,8 +91,7 @@ public class MenuView {
         if (toggleServer.isClosed()) System.out.println("2. Add device");
         if (toggleServer.isClosed()) System.out.println("3. Remove device");
         if (toggleServer.isClosed()) System.out.println("4. Learn device");
-        if (toggleServer.isClosed()) System.out.println("5. Show Devices");
-        if (toggleServer.isClosed()) System.out.println("6. Exit program");
+        if (toggleServer.isClosed()) System.out.println("5. Exit program");
         else {
             System.out.println("2. Exit Program");
             System.out.println("3. Show Devices");
@@ -112,7 +109,8 @@ public class MenuView {
                 System.out.println("Name: " + device.getName());
                 System.out.println("ID: " + device.getId());
                 System.out.println("Token: " + controller.getToken(device.getId()));
-                System.out.println("model: " + device.getModel());
+                System.out.println("Model: " + device.getModel());
+                System.out.println("Status: "+ device.getLastCmd());
 
                 System.out.println();
             }

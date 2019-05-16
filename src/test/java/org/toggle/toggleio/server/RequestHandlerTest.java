@@ -6,7 +6,6 @@ import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.toggle.toggleio.application.controller.ControllerStub;
-import org.toggle.toggleio.core.ToggleApi;
 
 class RequestHandlerTest {
     private RequestHandler requestHandler;
@@ -20,7 +19,7 @@ class RequestHandlerTest {
     @Test
     void handleRequestCorrectON() {
         final String input =
-                "POST /on HTTP/1.1\n" + "Content-Type: application/json\n"
+                "POST /io/device/on HTTP/1.1\n" + "Content-Type: application/json\n"
                         + "\n"
                         + "{\"token\":\"abcde12345\"}";
 
@@ -37,7 +36,7 @@ class RequestHandlerTest {
     @Test
     void handleRequestCorrectOFF() {
         final String input =
-                "POST /off HTTP/1.1\n"
+                "POST /io/device/off HTTP/1.1\n"
                         + "Content-Type: application/json\n"
                         + "\n"
                         + "{\"token\":\"abcde12345\"}";
@@ -54,7 +53,7 @@ class RequestHandlerTest {
     @Test
     void handleRequestCorrectSTATUS() {
         final String input =
-                "POST /status HTTP/1.1\n" + "Content-Type: application/json\n"
+                "POST /io/device/status HTTP/1.1\n" + "Content-Type: application/json\n"
                         + "\n"
                         + "{\"token\":\"abcde12345\"}";
 
