@@ -10,16 +10,19 @@ import java.util.Scanner;
 
 
 public class MenuView {
-   final private static String API_REGISTER_URL = "http://130.229.147.100/api/device/register";
+   /*final private static String API_REGISTER_URL = "http://130.229.147.100/api/device/register";
    final private static String API_UPDATE_URL = "http://130.229.147.100/api/device/update";
     final private static String API_REMOVE_URL = "http://130.229.147.100/api/device/remove";
+
+    */
     private Controller controller;
     private ToggleServer toggleServer;
     private Tellstick tellstick;
     private ToggleIoDevice toggleIoDevice;
     private ToggleApi toggleApi;
-    //final private static String API_REGISTER_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/register";
-    //final private static String API_UPDATE_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/update";
+    final private static String API_REGISTER_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/register";
+    final private static String API_UPDATE_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/update";
+    final private static String API_REMOVE_URL = "https://toggle-api.eu-gb.mybluemix.net/api/device/remove";
 
     public MenuView(Controller controller){
         this.controller = controller;
