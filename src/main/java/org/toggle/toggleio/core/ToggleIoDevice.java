@@ -184,6 +184,7 @@ public class ToggleIoDevice {
             } catch (NumberFormatException nfe) {
                 System.out.println("Please enter a valid number");
             } catch (NullPointerException npe) {
+                tellstick.removeDevice((Integer.parseInt(input)));
                 System.out.println("Device removed!");
                 return;
             }
